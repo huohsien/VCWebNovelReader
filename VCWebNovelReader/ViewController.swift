@@ -17,9 +17,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate {
 //    @IBOutlet weak var readerWebView: WKWebView!
     @IBOutlet weak var readerTextView: UITextView!
 
-    var _textLineSpacing:CGFloat = 14.0
+    var _textLineSpacing:CGFloat = 5.0
     var _charactersSpacing:CGFloat = 2.5
-    var _chapterTitleFontSize:CGFloat = 34.0
     var _chapterContentFontSize:CGFloat = 26.0
     
     
@@ -30,6 +29,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate {
         // Do any additional setup after loading the view.
         
         readerWebView.navigationDelegate = self
+        readerTextView.text = "Loading..."
         
         let bookContentURL = URL(string: bookContentURLString)
         print("before request")
