@@ -13,9 +13,18 @@ import Kanna
 let bookContentURLString = "https://t.hjwzw.com/Read/8704_3121898"
 
 class VCReaderContentViewController: UIViewController,WKNavigationDelegate {
-    @IBOutlet weak var readerWebView: WKWebView!
-    @IBOutlet weak var readerTextView: UITextView!
     
+//    @IBOutlet weak var readerWebView: WKWebView!
+    @IBOutlet weak var readerTextView: UITextView!
+
+    var _textLineSpacing:CGFloat = 14.0
+    var _charactersSpacing:CGFloat = 2.5
+    var _chapterTitleFontSize:CGFloat = 34.0
+    var _chapterContentFontSize:CGFloat = 26.0
+    
+    
+    let readerWebView = WKWebView.init(frame: .zero)
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -59,8 +68,31 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate {
                     contentString += p.text!
                 }
                 print(contentString)
+                self.readerTextView.attributedText = self.createAttributiedChapterContentStringFrom(string: contentString)
             }
         })
+    }
+    
+    func createAttributiedChapterContentStringFrom(string:String)->NSAttributedString {
+        
+        let workingAttributedString = NSMutableAttributedString.init(string: string)
+        let paragraphStyle = NSMutableParagraphStyle.init()
+        paragraphStyle.lineSpacing = _textLineSpacing;
+        paragraphStyle.firstLineHeadIndent = _chapterContentFontSize * 2.0 + _charactersSpacing * 3.0;
+        paragraphStyle.alignment = .justified;
+        let font = UIFont.systemFont(ofSize: _chapterContentFontSize)
+
+        
+        let backgroundColor = UIColor.clear
+        let foregroundColor = UIColor.init(red: 102 / 255.0, green: 102 / 255.0, blue: 102 / 255.0, alpha: 1.0)
+        
+        let attributionDict = [NSAttributedString.Key.paragraphStyle: paragraphStyle, NSAttributedString.Key.font: font, NSAttributedString.Key.backgroundColor: backgroundColor, NSAttributedString.Key.foregroundColor: foregroundColor]
+        
+        workingAttributedString.addAttributes(attributionDict, range: NSMakeRange(0, string.count))
+        workingAttributedString.addAttribute(NSAttributedString.Key.kern, value: _charactersSpacing, range: NSMakeRange(0,string.count))
+        
+        let attributedString = NSAttributedString.init(attributedString: workingAttributedString)
+        return attributedString;
     }
 
 }
