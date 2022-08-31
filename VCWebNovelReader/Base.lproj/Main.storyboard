@@ -16,14 +16,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kS2-D5-b2d">
-                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
-                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <wkWebViewConfiguration key="configuration">
-                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
-                                    <wkPreferences key="preferences"/>
-                                </wkWebViewConfiguration>
-                            </wkWebView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="d4E-Lg-10E">
                                 <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -35,12 +27,8 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="kS2-D5-b2d" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="BKP-bM-qYf"/>
                             <constraint firstItem="d4E-Lg-10E" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="GrJ-In-v0a"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="kS2-D5-b2d" secondAttribute="trailing" id="Ui1-lC-xWd"/>
-                            <constraint firstItem="kS2-D5-b2d" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="VrG-bI-96g"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="d4E-Lg-10E" secondAttribute="bottom" id="WLQ-l6-DlG"/>
-                            <constraint firstItem="kS2-D5-b2d" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="fPP-UT-hwZ"/>
                             <constraint firstItem="d4E-Lg-10E" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="pGs-Wv-Yuc"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="d4E-Lg-10E" secondAttribute="trailing" id="zpg-D0-m3o"/>
                         </constraints>
@@ -51,7 +39,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="102.89855072463769" y="93.75"/>
+            <point key="canvasLocation" x="-223.18840579710147" y="-243.08035714285714"/>
         </scene>
     </scenes>
     <resources>

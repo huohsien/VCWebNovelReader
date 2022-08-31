@@ -12,14 +12,14 @@ import Kanna
 //let bookContentURLString = "https://m.hetubook.com/book/9/5872.html"
 let bookContentURLString = "https://t.hjwzw.com/Read/8704_3156957"
 
-class VCReaderContentViewController: UIViewController,WKNavigationDelegate {
+class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITextViewDelegate {
     
-//    @IBOutlet weak var readerWebView: WKWebView!
     @IBOutlet weak var readerTextView: UITextView!
-
+    
     var _textLineSpacing:CGFloat = 5.0
     var _charactersSpacing:CGFloat = 2.5
     var _chapterContentFontSize:CGFloat = 26.0
+    var isLoadingNewPage = false
     
     
     let readerWebView = WKWebView.init(frame: .zero)
@@ -27,29 +27,28 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
+                
         readerWebView.navigationDelegate = self
         readerTextView.text = "Loading..."
+        readerTextView.delegate = self
+        readerWebView.frame = .zero
         
+        isLoadingNewPage = true
         let bookContentURL = URL(string: bookContentURLString)
-        print("before request")
         let request = URLRequest(url: bookContentURL!)
-        print("after request")
         readerWebView.load(request)
-        print("after load")
 
     }
 
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        print("didCommit")
+//        print("didCommit")
     }
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         print("didFinish")
+        isLoadingNewPage = false
         getHTML()
     }
-    func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
-        print("didReceiveServerRedirectForProvisionalNavigation")
-    }
+
     
     func getHTML() {
         readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
@@ -60,10 +59,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate {
             
             
             if let doc = try? HTML(html: htmlString, encoding: .utf8) {
-                print(doc.title)
-                
                 // get content
                 var contentString = ""
+                let chapterTitle:String = doc.title!
+                    contentString = chapterTitle + "\n\n"
                 for p in doc.xpath("//div[@id='Lab_Contents']/p") {
                     let pp = p.text!.trimmingCharacters(in: .whitespaces)
                     print("str= \(pp)")
@@ -72,7 +71,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate {
                 
                 
                 self.readerTextView.attributedText = self.createAttributiedChapterContentStringFrom(string: contentString)
-//                self.readerTextView.attributedText = self.createAttributiedChapterContentStringFrom(string: "你好\n你老母\n")
+                self.readerTextView.setContentOffset(.zero, animated: false)
 
             }
         })
@@ -99,6 +98,17 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate {
         let attributedString = NSAttributedString.init(attributedString: workingAttributedString)
         return attributedString;
     }
-
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if (scrollView.contentOffset.y >= scrollView.contentSize.height - scrollView.frame.size.height && isLoadingNewPage == false) {
+            isLoadingNewPage = true
+            print( "View scrolled to the bottom. Load the next chapter" )
+            readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
+            readerTextView.text = ""
+            self.readerTextView.setContentOffset(.zero, animated: false)
+        }
+    }
+    
 }
 
