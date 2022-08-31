@@ -10,7 +10,7 @@ import WebKit
 import Kanna
 
 //let bookContentURLString = "https://m.hetubook.com/book/9/5872.html"
-let bookContentURLString = "https://t.hjwzw.com/Read/8704_3121898"
+let bookContentURLString = "https://t.hjwzw.com/Read/8704_3156957"
 
 class VCReaderContentViewController: UIViewController,WKNavigationDelegate {
     
@@ -64,11 +64,16 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate {
                 
                 // get content
                 var contentString = ""
-                for p in doc.xpath("//div[@id='Lab_Contents']") {
-                    contentString += p.text!
+                for p in doc.xpath("//div[@id='Lab_Contents']/p") {
+                    let pp = p.text!.trimmingCharacters(in: .whitespaces)
+                    print("str= \(pp)")
+                    contentString += pp
                 }
-                print(contentString)
+                
+                
                 self.readerTextView.attributedText = self.createAttributiedChapterContentStringFrom(string: contentString)
+//                self.readerTextView.attributedText = self.createAttributiedChapterContentStringFrom(string: "你好\n你老母\n")
+
             }
         })
     }
