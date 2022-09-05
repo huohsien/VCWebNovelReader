@@ -9,8 +9,14 @@ import UIKit
 import WebKit
 import Kanna
 
-//let bookContentURLString = "https://m.hetubook.com/book/9/5872.html"
-let bookContentURLString = "https://t.hjwzw.com/Read/8704_3156957"
+let CURRENT_URL_KEY = "CURRENT_URL_KEY"
+let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
+
+//let bookContentURLString = "https://m.hetubook.com/book/9/5946.html"
+var bookContentURLString = "https://t.hjwzw.com/Read/8704_3701921"
+var readerTextViewOffset:CGFloat = 0.0
+var didJustLaunch = true
+let defaults = UserDefaults.standard
 
 class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITextViewDelegate {
     
@@ -24,10 +30,50 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
     
     let readerWebView = WKWebView.init(frame: .zero)
 
+    func syncState() {
+        print("sync state")
+        
+        var storedCurrentUrl = defaults.string(forKey: CURRENT_URL_KEY)
+        if storedCurrentUrl == nil {
+            print("storing url:\(bookContentURLString)")
+            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY)
+            storedCurrentUrl = bookContentURLString
+            print("init url \(bookContentURLString)")
+        } else {
+            print("loaded url:\(storedCurrentUrl!)")
+            if didJustLaunch {
+                bookContentURLString = storedCurrentUrl!
+            }
+        }
+        
+        if storedCurrentUrl != bookContentURLString {
+            print("storing url:\(bookContentURLString)")
+            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY)
+        }
+        didJustLaunch = false
+    }
+    
+    func loadTextViewOffset() {
+        
+//        let storedTextViewOffset = defaults.float(forKey: CURRENT_TEXTVIEW_OFFSET_KEY)
+//        if storedTextViewOffset != 0 {
+//            print("storedTextViewOffset:\(storedTextViewOffset)")
+//            readerTextViewOffset = CGFloat(storedTextViewOffset)
+//        }
+    }
+    func storeTextViewOffset() {
+
+//        print("scrolling offset was stored")
+//        defaults.set(Float(readerTextView.contentOffset.y), forKey: CURRENT_TEXTVIEW_OFFSET_KEY)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-                
+
+        syncState()
+        loadTextViewOffset()
+        
         readerWebView.navigationDelegate = self
         readerTextView.text = "Loading..."
         readerTextView.delegate = self
@@ -45,6 +91,9 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
     }
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         print("didFinish")
+        bookContentURLString = readerWebView.url!.absoluteString
+        syncState()
+        
         isLoadingNewPage = false
         getHTML()
     }
@@ -63,15 +112,29 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
                 var contentString = ""
                 let chapterTitle:String = doc.title!
                     contentString = chapterTitle + "\n\n"
+                
+                // 黃金屋
+                
                 for p in doc.xpath("//div[@id='Lab_Contents']/p") {
                     let pp = p.text!.trimmingCharacters(in: .whitespaces)
-                    print("str= \(pp)")
+//                    print("str= \(pp)")
                     contentString += pp
                 }
                 
                 
+                // 和圖書
+                /*
+                for div in doc.xpath("//dd[@id='content']/div") {
+                    let pDiv = div.text!.trimmingCharacters(in: .whitespaces)
+                    print("str= \(pDiv)")
+                    contentString += pDiv
+                    contentString += "\n"
+                }
+                */
+                
                 self.readerTextView.attributedText = self.createAttributiedChapterContentStringFrom(string: contentString)
-                self.readerTextView.setContentOffset(.zero, animated: false)
+                self.loadTextViewOffset()
+                self.readerTextView.setContentOffset(CGPoint(x:0, y: readerTextViewOffset), animated: false)
 
             }
         })
@@ -101,10 +164,21 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
+        storeTextViewOffset()
+        
         if (scrollView.contentOffset.y >= scrollView.contentSize.height - scrollView.frame.size.height && isLoadingNewPage == false) {
             isLoadingNewPage = true
             print( "View scrolled to the bottom. Load the next chapter" )
+            
+            readerTextViewOffset = 0.0
+            // 黃金屋
+            
             readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
+            
+            
+            // 和圖書
+            
+            
             readerTextView.text = ""
             self.readerTextView.setContentOffset(.zero, animated: false)
         }
