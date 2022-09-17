@@ -13,7 +13,7 @@ let CURRENT_URL_KEY = "CURRENT_URL_KEY"
 let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
 
 //let bookContentURLString = "https://m.hetubook.com/book/9/5946.html"
-var bookContentURLString = "https://t.hjwzw.com/Read/8704_3701921"
+var bookContentURLString = "https://t.hjwzw.com/Read/24632_3184978" // "https://t.hjwzw.com/Read/8704_3701921"
 var readerTextViewOffset:CGFloat = 0.0
 var didJustLaunch = true
 let defaults = UserDefaults.standard
@@ -22,11 +22,13 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
     
     @IBOutlet weak var readerTextView: UITextView!
     
-    var _textLineSpacing:CGFloat = 5.0
-    var _charactersSpacing:CGFloat = 2.5
-    var _chapterContentFontSize:CGFloat = 26.0
+    let _textLineSpacing:CGFloat = 5.0
+    let _charactersSpacing:CGFloat = 2.5
+    let _chapterContentFontSize:CGFloat = 26.0
     var isLoadingNewPage = false
     
+    let _backgroundColor = UIColor.init(red: 26.0 / 255.0, green: 26.0 / 255.0, blue: 26.0 / 255.0, alpha: 1.0)
+    let _foregroundColor = UIColor.init(red: 178.0 / 255.0, green: 178.0 / 255.0, blue: 178.0 / 255.0, alpha: 1.0)
     
     let readerWebView = WKWebView.init(frame: .zero)
 
@@ -71,6 +73,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
         super.viewDidLoad()
         // Do any additional setup after loading the view.
 
+        self.view.backgroundColor = _backgroundColor
+        self.readerTextView.backgroundColor = _backgroundColor
         syncState()
         loadTextViewOffset()
         
@@ -132,6 +136,9 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
                 }
                 */
                 
+                for i in 1...20 {
+                    contentString += "\n"
+                }
                 self.readerTextView.attributedText = self.createAttributiedChapterContentStringFrom(string: contentString)
                 self.loadTextViewOffset()
                 self.readerTextView.setContentOffset(CGPoint(x:0, y: readerTextViewOffset), animated: false)
@@ -148,12 +155,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
         paragraphStyle.firstLineHeadIndent = _chapterContentFontSize * 2.0 + _charactersSpacing * 3.0;
         paragraphStyle.alignment = .justified;
         let font = UIFont.systemFont(ofSize: _chapterContentFontSize)
-
         
-        let backgroundColor = UIColor.clear
-        let foregroundColor = UIColor.init(red: 102 / 255.0, green: 102 / 255.0, blue: 102 / 255.0, alpha: 1.0)
-        
-        let attributionDict = [NSAttributedString.Key.paragraphStyle: paragraphStyle, NSAttributedString.Key.font: font, NSAttributedString.Key.backgroundColor: backgroundColor, NSAttributedString.Key.foregroundColor: foregroundColor]
+        let attributionDict = [NSAttributedString.Key.paragraphStyle: paragraphStyle, NSAttributedString.Key.font: font, NSAttributedString.Key.backgroundColor: _backgroundColor, NSAttributedString.Key.foregroundColor: _foregroundColor]
         
         workingAttributedString.addAttributes(attributionDict, range: NSMakeRange(0, string.count))
         workingAttributedString.addAttribute(NSAttributedString.Key.kern, value: _charactersSpacing, range: NSMakeRange(0,string.count))
