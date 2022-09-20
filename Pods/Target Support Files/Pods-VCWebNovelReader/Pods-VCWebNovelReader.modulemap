@@ -1,0 +1,6 @@
+framework module Pods_VCWebNovelReader {
+  umbrella header "Pods-VCWebNovelReader-umbrella.h"
+
+  export *
+  module * { export * }
+}
