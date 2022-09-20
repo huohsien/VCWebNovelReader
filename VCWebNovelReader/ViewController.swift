@@ -25,13 +25,13 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
     
     @IBOutlet weak var readerTextView: UITextView!
     
-    let _textLineSpacing:CGFloat = 5.0
+    let _textLineSpacing:CGFloat = 8.0
     let _charactersSpacing:CGFloat = 2.5
     let _chapterContentFontSize:CGFloat = 26.0
     var isLoadingNewPage = false
     
-    let _backgroundColor = UIColor.init(red: 26.0 / 255.0, green: 26.0 / 255.0, blue: 26.0 / 255.0, alpha: 1.0)
-    let _foregroundColor = UIColor.init(red: 178.0 / 255.0, green: 178.0 / 255.0, blue: 178.0 / 255.0, alpha: 1.0)
+    let _backgroundColor = UIColor.init(red: 28.0 / 255.0, green: 28.0 / 255.0, blue: 28.0 / 255.0, alpha: 1.0)
+    let _foregroundColor = UIColor.init(red: 180.0 / 255.0, green: 180.0 / 255.0, blue: 180.0 / 255.0, alpha: 1.0)
     
     let readerWebView = WKWebView.init(frame: .zero)
 
