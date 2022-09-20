@@ -12,8 +12,11 @@ import Kanna
 let CURRENT_URL_KEY = "CURRENT_URL_KEY"
 let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
 
-//let bookContentURLString = "https://m.hetubook.com/book/9/5946.html"
-var bookContentURLString = "https://t.hjwzw.com/Read/24632_3184978" // "https://t.hjwzw.com/Read/8704_3701921"
+//var bookContentURLString = "https://m.hetubook.com/book/9/5946.html"
+//var bookContentURLString = "https://t.hjwzw.com/Read/24632_3184978"
+//var bookContentURLString = "https://t.hjwzw.com/Read/8704_3701921"
+var bookContentURLString = "https://t.hjwzw.com/Read/35619_11196308"
+
 var readerTextViewOffset:CGFloat = 0.0
 var didJustLaunch = true
 let defaults = UserDefaults.standard
@@ -35,10 +38,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
     func syncState() {
         print("sync state")
         
-        var storedCurrentUrl = defaults.string(forKey: CURRENT_URL_KEY)
+        var storedCurrentUrl = defaults.string(forKey: CURRENT_URL_KEY + bookContentURLString)
         if storedCurrentUrl == nil {
             print("storing url:\(bookContentURLString)")
-            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY)
+            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + bookContentURLString)
             storedCurrentUrl = bookContentURLString
             print("init url \(bookContentURLString)")
         } else {
@@ -50,7 +53,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
         
         if storedCurrentUrl != bookContentURLString {
             print("storing url:\(bookContentURLString)")
-            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY)
+            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + bookContentURLString)
         }
         didJustLaunch = false
     }
