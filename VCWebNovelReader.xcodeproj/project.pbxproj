@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -58,7 +58,6 @@
 				7879CEDD04FB09A2A713F611 /* Pods-VCWebNovelReader.debug.xcconfig */,
 				F2D59440AF6F09B8810558E9 /* Pods-VCWebNovelReader.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};

@@ -15,7 +15,9 @@ let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
 //var bookContentURLString = "https://m.hetubook.com/book/9/5946.html"
 //var bookContentURLString = "https://t.hjwzw.com/Read/24632_3184978"
 //var bookContentURLString = "https://t.hjwzw.com/Read/8704_3701921"
-var bookContentURLString = "https://t.hjwzw.com/Read/35619_11196308"
+//var bookContentURLString = "https://t.hjwzw.com/Read/35619_11196308"
+
+var bookContentURLString = "https://t.hjwzw.com/Read/36219_13241392"
 
 var readerTextViewOffset:CGFloat = 0.0
 var didJustLaunch = true
