@@ -17,7 +17,7 @@ let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
 //var bookContentURLString = "https://t.hjwzw.com/Read/8704_3701921"
 //var bookContentURLString = "https://t.hjwzw.com/Read/35619_11196308"
 
-var bookContentURLString = "https://t.hjwzw.com/Read/36219_13241392"
+var bookContentURLString = "https://t.hjwzw.com/Read/36219_13922908"
 
 var readerTextViewOffset:CGFloat = 0.0
 var didJustLaunch = true
@@ -37,13 +37,25 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
     
     let readerWebView = WKWebView.init(frame: .zero)
 
+    func uniqueBookOf(urlString: String)->String {
+        // 黃金屋
+        
+        print("urlString=\(urlString)")
+        
+        let strs = urlString.components(separatedBy: "_")
+        let uniqueBookUrlString = strs[0]
+        
+        print("uniqueBookUrlString=\(uniqueBookUrlString)")
+        return uniqueBookUrlString
+    }
+    
     func syncState() {
         print("sync state")
         
-        var storedCurrentUrl = defaults.string(forKey: CURRENT_URL_KEY + bookContentURLString)
+        var storedCurrentUrl = defaults.string(forKey: CURRENT_URL_KEY + uniqueBookOf(urlString: bookContentURLString))
         if storedCurrentUrl == nil {
             print("storing url:\(bookContentURLString)")
-            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + bookContentURLString)
+            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + uniqueBookOf(urlString: bookContentURLString))
             storedCurrentUrl = bookContentURLString
             print("init url \(bookContentURLString)")
         } else {
@@ -55,7 +67,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
         
         if storedCurrentUrl != bookContentURLString {
             print("storing url:\(bookContentURLString)")
-            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + bookContentURLString)
+            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + uniqueBookOf(urlString: bookContentURLString))
         }
         didJustLaunch = false
     }
