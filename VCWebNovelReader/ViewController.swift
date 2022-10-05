@@ -17,7 +17,7 @@ let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
 //var bookContentURLString = "https://t.hjwzw.com/Read/8704_3701921"
 //var bookContentURLString = "https://t.hjwzw.com/Read/35619_11196308"
 
-var bookContentURLString = "https://t.hjwzw.com/Read/36219_13922908"
+var bookContentURLString = "https://t.hjwzw.com/Read/36219_15223404"
 
 var readerTextViewOffset:CGFloat = 0.0
 var didJustLaunch = true
