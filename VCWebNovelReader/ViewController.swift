@@ -27,6 +27,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
     
     @IBOutlet weak var readerTextView: UITextView!
     
+    var pageTextViews = [UITextView]()
+    
     let _textLineSpacing:CGFloat = 10.0
     let _charactersSpacing:CGFloat = 0.5
     let _chapterContentFontSize:CGFloat = 27.0
@@ -156,12 +158,34 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate, UITe
                 for i in 1...20 {
                     contentString += "\n"
                 }
-                self.readerTextView.attributedText = self.createAttributiedChapterContentStringFrom(string: contentString)
+                let attributedText = self.createAttributiedChapterContentStringFrom(string: contentString)
+                self.renderTextPagesFrom(contenAttributedString:attributedText)
+
+                self.view.addSubview(self.pageTextViews[1])
                 self.loadTextViewOffset()
                 self.readerTextView.setContentOffset(CGPoint(x:0, y: readerTextViewOffset), animated: false)
 
             }
         })
+    }
+    
+    func renderTextPagesFrom(contenAttributedString: NSAttributedString) {
+        let textStorage = NSTextStorage(attributedString: contenAttributedString)
+        let layoutManager = NSLayoutManager()
+        textStorage.addLayoutManager(layoutManager)
+        
+        let rect = self.readerTextView.frame
+        var range:NSRange = NSRange(location: 0, length: 0)
+        var numberOfPages:Int = 0
+        
+        while(NSMaxRange(range) < layoutManager.numberOfGlyphs) {
+            let textContainer = NSTextContainer(size: rect.size)
+            layoutManager.addTextContainer(textContainer)
+            range = layoutManager.glyphRange(for: textContainer)
+            
+            let pageTextView = UITextView(frame: rect, textContainer: textContainer)
+            pageTextViews.append(pageTextView)
+        }
     }
     
     func createAttributiedChapterContentStringFrom(string:String)->NSAttributedString {
