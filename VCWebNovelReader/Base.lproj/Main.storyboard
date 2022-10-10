@@ -5,6 +5,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,25 +17,42 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="d4E-Lg-10E">
-                                <rect key="frame" x="20" y="48" width="374" height="814"/>
-                                <color key="backgroundColor" red="0.10196078431372549" green="0.10196078431372549" blue="0.10196078431372549" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="27"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dtf-fk-W75" userLabel="Page Content View">
+                                <rect key="frame" x="20" y="68" width="374" height="774"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gcm-9i-Pnk">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tGN-92-wcc" userLabel="contentView">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="tGN-92-wcc" firstAttribute="top" secondItem="Rme-h2-fuf" secondAttribute="top" id="3Aa-Fg-HSw"/>
+                                    <constraint firstItem="Rme-h2-fuf" firstAttribute="bottom" secondItem="tGN-92-wcc" secondAttribute="bottom" id="MrP-F7-k4e"/>
+                                    <constraint firstItem="tGN-92-wcc" firstAttribute="leading" secondItem="Rme-h2-fuf" secondAttribute="leading" id="Tqm-1T-BWn"/>
+                                    <constraint firstItem="Rme-h2-fuf" firstAttribute="trailing" secondItem="tGN-92-wcc" secondAttribute="trailing" id="YHS-9Y-KD2"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="MFT-7s-oWQ"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="Rme-h2-fuf"/>
+                            </scrollView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.10196078431372549" green="0.10196078431372549" blue="0.10196078431372549" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="d4E-Lg-10E" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="cVZ-DZ-2vG"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="d4E-Lg-10E" secondAttribute="trailing" constant="20" id="jpj-zy-YII"/>
-                            <constraint firstItem="d4E-Lg-10E" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="oSs-sk-aPE"/>
-                            <constraint firstItem="d4E-Lg-10E" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="rco-6m-8Ot"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dtf-fk-W75" secondAttribute="trailing" constant="20" id="3Bk-NM-00b"/>
+                            <constraint firstItem="dtf-fk-W75" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="SfH-0i-7d0"/>
+                            <constraint firstItem="dtf-fk-W75" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="qeN-Mp-WSV"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="dtf-fk-W75" secondAttribute="bottom" constant="20" id="sK7-2f-xYA"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="readerTextView" destination="d4E-Lg-10E" id="jkV-rx-CpK"/>
+                        <outlet property="bookPageScrollContentView" destination="tGN-92-wcc" id="e2B-tE-ABK"/>
+                        <outlet property="bookPageScrollView" destination="gcm-9i-Pnk" id="Rp0-xk-mPT"/>
+                        <outlet property="pageContentView" destination="dtf-fk-W75" id="ZP0-F5-Ukh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -42,4 +60,9 @@
             <point key="canvasLocation" x="-223.18840579710147" y="-243.08035714285714"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>
