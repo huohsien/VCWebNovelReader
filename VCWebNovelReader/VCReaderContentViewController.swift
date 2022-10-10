@@ -12,7 +12,7 @@ import Kanna
 let CURRENT_URL_KEY = "CURRENT_URL_KEY"
 let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
 
-var bookContentURLString = "https://t.hjwzw.com/Read/35500_8946955"
+var bookContentURLString = "https://t.hjwzw.com/Read/35500_8947147"
 
 var didJustLaunch = true
 let defaults = UserDefaults.standard
@@ -58,6 +58,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         self.view.backgroundColor = _backgroundColor
         self.bookPageScrollView.backgroundColor = _backgroundColor
         self.bookPageScrollContentView.backgroundColor = _backgroundColor
+        self.pageContentView.backgroundColor = .clear
     
         syncState()
         

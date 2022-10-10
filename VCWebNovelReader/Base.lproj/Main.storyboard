@@ -17,36 +17,31 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dtf-fk-W75" userLabel="Page Content View">
-                                <rect key="frame" x="20" y="68" width="374" height="774"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gcm-9i-Pnk">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tGN-92-wcc" userLabel="contentView">
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tGN-92-wcc" userLabel="contentView">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     </view>
                                 </subviews>
-                                <constraints>
-                                    <constraint firstItem="tGN-92-wcc" firstAttribute="top" secondItem="Rme-h2-fuf" secondAttribute="top" id="3Aa-Fg-HSw"/>
-                                    <constraint firstItem="Rme-h2-fuf" firstAttribute="bottom" secondItem="tGN-92-wcc" secondAttribute="bottom" id="MrP-F7-k4e"/>
-                                    <constraint firstItem="tGN-92-wcc" firstAttribute="leading" secondItem="Rme-h2-fuf" secondAttribute="leading" id="Tqm-1T-BWn"/>
-                                    <constraint firstItem="Rme-h2-fuf" firstAttribute="trailing" secondItem="tGN-92-wcc" secondAttribute="trailing" id="YHS-9Y-KD2"/>
-                                </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="MFT-7s-oWQ"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="Rme-h2-fuf"/>
                             </scrollView>
+                            <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dtf-fk-W75" userLabel="Page Content View">
+                                <rect key="frame" x="8" y="49" width="398" height="798"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.10196078431372549" green="0.10196078431372549" blue="0.10196078431372549" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dtf-fk-W75" secondAttribute="trailing" constant="20" id="3Bk-NM-00b"/>
-                            <constraint firstItem="dtf-fk-W75" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="SfH-0i-7d0"/>
-                            <constraint firstItem="dtf-fk-W75" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="qeN-Mp-WSV"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="dtf-fk-W75" secondAttribute="bottom" constant="20" id="sK7-2f-xYA"/>
+                            <constraint firstItem="dtf-fk-W75" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="1" id="F5x-bO-xuj"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="dtf-fk-W75" secondAttribute="bottom" constant="15" id="U29-1i-LFa"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dtf-fk-W75" secondAttribute="trailing" constant="8" id="mx8-zk-8Xc"/>
+                            <constraint firstItem="dtf-fk-W75" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="sZH-jZ-pKp"/>
                         </constraints>
                     </view>
                     <connections>
