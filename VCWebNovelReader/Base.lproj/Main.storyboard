@@ -5,7 +5,6 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -24,30 +23,34 @@
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tGN-92-wcc" userLabel="contentView">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                 </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <viewLayoutGuide key="contentLayoutGuide" id="MFT-7s-oWQ"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="Rme-h2-fuf"/>
                             </scrollView>
-                            <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dtf-fk-W75" userLabel="Page Content View">
+                            <view alpha="0.5" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dtf-fk-W75" userLabel="Page Content View">
                                 <rect key="frame" x="8" y="49" width="398" height="798"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="yqI-LE-rvS">
+                                <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.10196078431372549" green="0.10196078431372549" blue="0.10196078431372549" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="dtf-fk-W75" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="1" id="F5x-bO-xuj"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="dtf-fk-W75" secondAttribute="bottom" constant="15" id="U29-1i-LFa"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dtf-fk-W75" secondAttribute="trailing" constant="8" id="mx8-zk-8Xc"/>
-                            <constraint firstItem="dtf-fk-W75" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="sZH-jZ-pKp"/>
+                            <constraint firstItem="yqI-LE-rvS" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Io2-q5-Q3H"/>
+                            <constraint firstItem="yqI-LE-rvS" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="VBa-WW-eIv"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="bookPageScrollContentView" destination="tGN-92-wcc" id="e2B-tE-ABK"/>
                         <outlet property="bookPageScrollView" destination="gcm-9i-Pnk" id="Rp0-xk-mPT"/>
                         <outlet property="pageContentView" destination="dtf-fk-W75" id="ZP0-F5-Ukh"/>
+                        <outlet property="webLoadingActivityIndicator" destination="yqI-LE-rvS" id="Kai-FU-k6A"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -55,9 +58,4 @@
             <point key="canvasLocation" x="-223.18840579710147" y="-243.08035714285714"/>
         </scene>
     </scenes>
-    <resources>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-    </resources>
 </document>

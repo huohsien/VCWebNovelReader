@@ -12,7 +12,7 @@ import Kanna
 let CURRENT_URL_KEY = "CURRENT_URL_KEY"
 let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
 
-var bookContentURLString = "https://t.hjwzw.com/Read/35500_8947147"
+var bookContentURLString = "https://t.hjwzw.com/Read/35500_8947189"
 
 var didJustLaunch = true
 let defaults = UserDefaults.standard
@@ -23,6 +23,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     @IBOutlet weak var pageContentView: UIView!
     @IBOutlet weak var bookPageScrollContentView: UIView!
     @IBOutlet weak var bookPageScrollView: UIScrollView!
+    @IBOutlet weak var webLoadingActivityIndicator: UIActivityIndicatorView!
     
     // touch
     var _lastTouchedPointX:CGFloat = 0.0
@@ -70,6 +71,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         let bookContentURL = URL(string: bookContentURLString)
         let request = URLRequest(url: bookContentURL!)
         readerWebView.load(request)
+        self.webLoadingActivityIndicator.startAnimating()
 
     }
 
@@ -80,11 +82,17 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     }
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         print("didFinish")
+        
+        self.webLoadingActivityIndicator.stopAnimating()
+
         bookContentURLString = readerWebView.url!.absoluteString
         syncState()
         
         isLoadingNewPage = false
         generateTextViewsFromWebResponse()
+    }
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        self.webLoadingActivityIndicator.stopAnimating()
     }
 
 // MARK: - Flows of Navigation on Reading
@@ -119,6 +127,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         
         // 和圖書
         
+        self.webLoadingActivityIndicator.startAnimating()
+
     }
     
 // MARK: - Functions for Content Creation
@@ -263,7 +273,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     func showTheCurrentPage() {
         for i in 0..<pageTextViews.count {
-            var index = i - pageNumber
+            let index = i - pageNumber
             
             let fullPageHeight = pageContentHeight() + 2 * verticalMargin()
             let pageTextView = pageTextViews[i]
