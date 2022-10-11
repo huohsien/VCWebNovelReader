@@ -12,7 +12,7 @@ import Kanna
 let CURRENT_URL_KEY = "CURRENT_URL_KEY"
 let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
 
-var bookContentURLString = "https://t.hjwzw.com/Read/35500_8947189"
+var bookContentURLString = "https://t.hjwzw.com/Read/35500_8996911"
 
 var didJustLaunch = true
 let defaults = UserDefaults.standard
@@ -24,6 +24,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     @IBOutlet weak var bookPageScrollContentView: UIView!
     @IBOutlet weak var bookPageScrollView: UIScrollView!
     @IBOutlet weak var webLoadingActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var pageNumberLabel: UILabel!
     
     // touch
     var _lastTouchedPointX:CGFloat = 0.0
@@ -59,6 +60,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         self.view.backgroundColor = _backgroundColor
         self.bookPageScrollView.backgroundColor = _backgroundColor
         self.bookPageScrollContentView.backgroundColor = _backgroundColor
+        self.pageNumberLabel.textColor = _foregroundColor
         self.pageContentView.backgroundColor = .clear
     
         syncState()
@@ -132,7 +134,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     }
     
 // MARK: - Functions for Content Creation
-
+    func showPageNumber() {
+        self.pageNumberLabel.text = "\(pageNumber+1) / \(self.pageTextViews.count)"
+    }
+    
     func generateTextViewsFromWebResponse() {
         
         readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
@@ -164,6 +169,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 
                 let attributedText = self.createAttributiedChapterContentStringFrom(string: contentString)
                 self.renderTextPagesFrom(contenAttributedString:attributedText)
+                
+                self.showPageNumber()
                 
                 for i in 0..<self.pageTextViews.count {
                     self.pageTextViews[i].frame = CGRect(x: self.horizontalMargin(), y: CGFloat(i) * fullScreenSize.height + self.verticalMargin(), width: self.pageContentWidth(), height: self.pageContentHeight())
@@ -253,6 +260,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         }, completion: { (finished: Bool) in
             print("current Page Number: \(self.pageNumber+1) Total number of Page: \(self.pageTextViews.count)")
         })
+        showPageNumber()
     }
     
     func swipeDown() {
@@ -269,6 +277,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         }, completion: { (finished: Bool) in
             print("current Page Number: \(self.pageNumber+1) Total number of Page: \(self.pageTextViews.count)")
         })
+        showPageNumber()
     }
     
     func showTheCurrentPage() {

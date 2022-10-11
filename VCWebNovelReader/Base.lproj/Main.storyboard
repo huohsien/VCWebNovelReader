@@ -35,21 +35,33 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="yqI-LE-rvS">
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="yqI-LE-rvS">
                                 <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="- / -" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U7c-Oe-uoq">
+                                <rect key="frame" x="40" y="822" width="334" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Iei-2M-ReB"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.10196078431372549" green="0.10196078431372549" blue="0.10196078431372549" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="yqI-LE-rvS" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Io2-q5-Q3H"/>
-                            <constraint firstItem="yqI-LE-rvS" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="VBa-WW-eIv"/>
+                            <constraint firstItem="U7c-Oe-uoq" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="40" id="4nM-hx-eDb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="U7c-Oe-uoq" secondAttribute="trailing" constant="40" id="Q2m-aH-ZEr"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="U7c-Oe-uoq" secondAttribute="bottom" id="ZQH-rG-yjr"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="bookPageScrollContentView" destination="tGN-92-wcc" id="e2B-tE-ABK"/>
                         <outlet property="bookPageScrollView" destination="gcm-9i-Pnk" id="Rp0-xk-mPT"/>
                         <outlet property="pageContentView" destination="dtf-fk-W75" id="ZP0-F5-Ukh"/>
+                        <outlet property="pageNumberLabel" destination="U7c-Oe-uoq" id="LIb-SY-4im"/>
                         <outlet property="webLoadingActivityIndicator" destination="yqI-LE-rvS" id="Kai-FU-k6A"/>
                     </connections>
                 </viewController>
