@@ -12,7 +12,7 @@ import Kanna
 let CURRENT_URL_KEY = "CURRENT_URL_KEY"
 let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
 
-var bookContentURLString = "https://t.hjwzw.com/Read/35500_8996911"
+var bookContentURLString = "https://t.hjwzw.com/Read/35500_9519985"
 
 var didJustLaunch = true
 let defaults = UserDefaults.standard
