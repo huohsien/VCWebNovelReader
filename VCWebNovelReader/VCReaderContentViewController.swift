@@ -13,10 +13,10 @@ import CloudKit
 let CURRENT_URL_KEY = "CURRENT_URL_KEY"
 let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
 
-var bookContentURLString = "https://t.hjwzw.com/Read/35500_9519985"
+var defaultBookContentURLString = "https://t.hjwzw.com/Read/35500_9574301"
 
 var didJustLaunch = true
-let defaults = UserDefaults.standard
+
 var fullScreenSize:CGSize = .zero
 
 class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITextViewDelegate {
@@ -68,12 +68,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         readerWebView.navigationDelegate = self
         readerWebView.frame = .zero
                 
-        syncState()
-        let bookContentURL = URL(string: bookContentURLString)
-        let request = URLRequest(url: bookContentURL!)
-        readerWebView.load(request)
-        self.webLoadingActivityIndicator.startAnimating()
-
+        loadFromCloud()
     }
 
 // MARK: - wkwebview delegates
@@ -86,8 +81,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         
         self.webLoadingActivityIndicator.stopAnimating()
 
-        bookContentURLString = readerWebView.url!.absoluteString
-        syncState()
+        let urlString = readerWebView.url!.absoluteString
+        saveToCloud(urlString: urlString)
         
         generateTextViewsFromWebResponse()
     }
@@ -97,31 +92,6 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
 
 // MARK: - Flows of Navigation on Reading
     
-    func syncState() {
-        print("sync state")
-
-        var storedCurrentUrl = defaults.string(forKey: CURRENT_URL_KEY + uniqueBookOf(urlString: bookContentURLString))
-        
-        if storedCurrentUrl == nil {
-            print("storing url:\(bookContentURLString)")
-            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + uniqueBookOf(urlString: bookContentURLString))
-            
-            storedCurrentUrl = bookContentURLString
-            print("init url \(bookContentURLString)")
-        } else {
-            print("loaded url:\(storedCurrentUrl!)")
-            if didJustLaunch {
-                bookContentURLString = storedCurrentUrl!
-            }
-        }
-        
-        if storedCurrentUrl != bookContentURLString {
-            print("storing url:\(bookContentURLString)")
-            defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + uniqueBookOf(urlString: bookContentURLString))
-
-        }
-        didJustLaunch = false
-    }
     
     func loadNextChapter() {
         
@@ -137,56 +107,62 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
 // MARK: - iCloud functions
         
     @objc func saveToCloud(urlString: String) {
+        
         let record = CKRecord(recordType: "ReadingStatus")
         record.setValue(urlString, forKey: "chapterURL")
         database.save(record) { record, error in
             if record != nil , error == nil {
-                print("save")
+                print("save url:\(urlString)")
             }
         }
     }
-//    func loadFromCloud() {
-//
-//        let query = CKQuery(recordType: "ReadingStatus", predicate: NSPredicate(value: true))
-//        database.perform(query, inZoneWith: nil) { records, error in
-//            guard let records = records, error == nil else {
-//                return
-//            }
-//            guard let record = records.last else {
-//                print("no record of ReadingStatus in iCloud")
-//                return
-//            }
-//            guard let chapterURL = record.value(forKey: "chapterURL") else {
-//                print("error: no data in field chapterURL")
-//                return
-//            }
-//            let urlString:String = chapterURL as? String ?? ""
-//            print("urlstring=\(urlString)")
-//
-//
-//            if urlString == "" {
-//                print("storing url:\(bookContentURLString)")
-//                self.saveToCloud(urlString: bookContentURLString)
-//
-//                storedCurrentUrl = bookContentURLString
-//                print("init url \(bookContentURLString)")
-//            } else {
-//                print("loaded url:\(storedCurrentUrl!)")
-//                if didJustLaunch {
-//                    bookContentURLString = storedCurrentUrl!
+    
+    func loadFromCloud() {
+
+        let query = CKQuery(recordType: "ReadingStatus", predicate: NSPredicate(value: true))
+        
+        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+
+        database.perform(query, inZoneWith: nil) { records, error in
+            
+            if error != nil {
+                print("error: \(error.debugDescription)")
+                return
+            }
+            var urlString = ""
+            
+            if records?.count == 0 || records == nil {
+                self.saveToCloud(urlString: defaultBookContentURLString)
+                urlString = defaultBookContentURLString
+
+            } else {
+
+//                for record in records! {
+//                    print("createDate: \(record.value(forKey: "creationDate"))")
 //                }
-//            }
-//
-//            if storedCurrentUrl != bookContentURLString {
-//                print("storing url:\(bookContentURLString)")
-//                defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + uniqueBookOf(urlString: bookContentURLString))
-//                saveToCloud(urlString: bookContentURLString)
-//
-//            }
-//            didJustLaunch = false
-//
-//        }
-//    }
+                
+                guard let record = records!.last else {
+                    print("no record of ReadingStatus in iCloud")
+                    return
+                }
+                guard let chapterURL = record.value(forKey: "chapterURL") else {
+                    print("error: no data in field chapterURL")
+                    return
+                }
+                
+                urlString = chapterURL as? String ?? ""
+                print("load urlstring=\(urlString)")
+            }
+            
+            let bookContentURL = URL(string: urlString)
+            let request = URLRequest(url: bookContentURL!)
+            DispatchQueue.main.async {
+                print("request url=\(urlString)")
+                self.readerWebView.load(request)
+                self.webLoadingActivityIndicator.startAnimating()
+            }
+        }
+    }
 
 // MARK: - Functions for Content Creation
     func showPageNumber() {
