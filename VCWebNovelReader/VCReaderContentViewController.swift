@@ -8,6 +8,7 @@
 import UIKit
 import WebKit
 import Kanna
+import CloudKit
 
 let CURRENT_URL_KEY = "CURRENT_URL_KEY"
 let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
@@ -19,6 +20,8 @@ let defaults = UserDefaults.standard
 var fullScreenSize:CGSize = .zero
 
 class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITextViewDelegate {
+
+    private let database = CKContainer(identifier: "iCloud.com.VHHC.VCWebNovelReader").publicCloudDatabase
     
     @IBOutlet weak var pageContentView: UIView!
     @IBOutlet weak var bookPageScrollContentView: UIView!
@@ -40,7 +43,6 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     let _textLineSpacing:CGFloat = 10.0
     let _charactersSpacing:CGFloat = 0.5
     let _chapterContentFontSize:CGFloat = 27.0
-    var isLoadingNewPage = false
     
     let _backgroundColor = UIColor.init(red: 26.0 / 255.0, green: 26.0 / 255.0, blue: 26.0 / 255.0, alpha: 1.0)
     let _foregroundColor = UIColor.init(red: 178.0 / 255.0, green: 178.0 / 255.0, blue: 178.0 / 255.0, alpha: 1.0)
@@ -62,14 +64,11 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         self.bookPageScrollContentView.backgroundColor = _backgroundColor
         self.pageNumberLabel.textColor = _foregroundColor
         self.pageContentView.backgroundColor = .clear
-    
-        syncState()
         
         readerWebView.navigationDelegate = self
-
         readerWebView.frame = .zero
-        
-        isLoadingNewPage = true
+                
+        syncState()
         let bookContentURL = URL(string: bookContentURLString)
         let request = URLRequest(url: bookContentURL!)
         readerWebView.load(request)
@@ -90,7 +89,6 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         bookContentURLString = readerWebView.url!.absoluteString
         syncState()
         
-        isLoadingNewPage = false
         generateTextViewsFromWebResponse()
     }
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -101,11 +99,13 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     func syncState() {
         print("sync state")
-        
+
         var storedCurrentUrl = defaults.string(forKey: CURRENT_URL_KEY + uniqueBookOf(urlString: bookContentURLString))
+        
         if storedCurrentUrl == nil {
             print("storing url:\(bookContentURLString)")
             defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + uniqueBookOf(urlString: bookContentURLString))
+            
             storedCurrentUrl = bookContentURLString
             print("init url \(bookContentURLString)")
         } else {
@@ -118,6 +118,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         if storedCurrentUrl != bookContentURLString {
             print("storing url:\(bookContentURLString)")
             defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + uniqueBookOf(urlString: bookContentURLString))
+
         }
         didJustLaunch = false
     }
@@ -133,6 +134,60 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
 
     }
     
+// MARK: - iCloud functions
+        
+    @objc func saveToCloud(urlString: String) {
+        let record = CKRecord(recordType: "ReadingStatus")
+        record.setValue(urlString, forKey: "chapterURL")
+        database.save(record) { record, error in
+            if record != nil , error == nil {
+                print("save")
+            }
+        }
+    }
+//    func loadFromCloud() {
+//
+//        let query = CKQuery(recordType: "ReadingStatus", predicate: NSPredicate(value: true))
+//        database.perform(query, inZoneWith: nil) { records, error in
+//            guard let records = records, error == nil else {
+//                return
+//            }
+//            guard let record = records.last else {
+//                print("no record of ReadingStatus in iCloud")
+//                return
+//            }
+//            guard let chapterURL = record.value(forKey: "chapterURL") else {
+//                print("error: no data in field chapterURL")
+//                return
+//            }
+//            let urlString:String = chapterURL as? String ?? ""
+//            print("urlstring=\(urlString)")
+//
+//
+//            if urlString == "" {
+//                print("storing url:\(bookContentURLString)")
+//                self.saveToCloud(urlString: bookContentURLString)
+//
+//                storedCurrentUrl = bookContentURLString
+//                print("init url \(bookContentURLString)")
+//            } else {
+//                print("loaded url:\(storedCurrentUrl!)")
+//                if didJustLaunch {
+//                    bookContentURLString = storedCurrentUrl!
+//                }
+//            }
+//
+//            if storedCurrentUrl != bookContentURLString {
+//                print("storing url:\(bookContentURLString)")
+//                defaults.set(bookContentURLString, forKey: CURRENT_URL_KEY + uniqueBookOf(urlString: bookContentURLString))
+//                saveToCloud(urlString: bookContentURLString)
+//
+//            }
+//            didJustLaunch = false
+//
+//        }
+//    }
+
 // MARK: - Functions for Content Creation
     func showPageNumber() {
         self.pageNumberLabel.text = "\(pageNumber+1) / \(self.pageTextViews.count)"
