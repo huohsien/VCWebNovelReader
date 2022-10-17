@@ -10,12 +10,13 @@ import WebKit
 import Kanna
 import CloudKit
 
-let CURRENT_URL_KEY = "CURRENT_URL_KEY"
-let CURRENT_TEXTVIEW_OFFSET_KEY = "CURRENT_TEXTVIEW_OFFSET_KEY"
+let CURRENT_CHAPTER_URL_KEY = "CURRENT_CHAPTER_URL_KEY"
+let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 
-var defaultBookContentURLString = "https://t.hjwzw.com/Read/35500_9574301"
+var defaultBookContentURLString = "https://t.hjwzw.com/Read/35500_10351485"
+let isInitialRun = false
 
-var didJustLaunch = true
+var cloudStore = NSUbiquitousKeyValueStore.default
 
 var fullScreenSize:CGSize = .zero
 
@@ -67,7 +68,12 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         
         readerWebView.navigationDelegate = self
         readerWebView.frame = .zero
-                
+        
+        if isInitialRun {
+            cloudStore.removeObject(forKey: CURRENT_CHAPTER_URL_KEY)
+            cloudStore.removeObject(forKey: CURRENT_PAGE_NUMBER_KEY)
+            saveToCloud(pageNumber: 0)
+        }
         loadFromCloud()
     }
 
@@ -106,62 +112,34 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
 // MARK: - iCloud functions
         
-    @objc func saveToCloud(urlString: String) {
-        
-        let record = CKRecord(recordType: "ReadingStatus")
-        record.setValue(urlString, forKey: "chapterURL")
-        database.save(record) { record, error in
-            if record != nil , error == nil {
-                print("save url:\(urlString)")
-            }
-        }
+    func saveToCloud(urlString: String) {
+        print("save url string to cloud storage: \(urlString)")
+        cloudStore.set(urlString, forKey: CURRENT_CHAPTER_URL_KEY)
+    }
+    
+    func saveToCloud(pageNumber: Int) {
+        print("save page number to cloud storage: \(pageNumber)")
+        cloudStore.set(pageNumber, forKey: CURRENT_PAGE_NUMBER_KEY)
     }
     
     func loadFromCloud() {
-
-        let query = CKQuery(recordType: "ReadingStatus", predicate: NSPredicate(value: true))
         
-        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-
-        database.perform(query, inZoneWith: nil) { records, error in
-            
-            if error != nil {
-                print("error: \(error.debugDescription)")
-                return
-            }
-            var urlString = ""
-            
-            if records?.count == 0 || records == nil {
-                self.saveToCloud(urlString: defaultBookContentURLString)
-                urlString = defaultBookContentURLString
-
-            } else {
-
-//                for record in records! {
-//                    print("createDate: \(record.value(forKey: "creationDate"))")
-//                }
-                
-                guard let record = records!.last else {
-                    print("no record of ReadingStatus in iCloud")
-                    return
-                }
-                guard let chapterURL = record.value(forKey: "chapterURL") else {
-                    print("error: no data in field chapterURL")
-                    return
-                }
-                
-                urlString = chapterURL as? String ?? ""
-                print("load urlstring=\(urlString)")
-            }
-            
-            let bookContentURL = URL(string: urlString)
-            let request = URLRequest(url: bookContentURL!)
-            DispatchQueue.main.async {
-                print("request url=\(urlString)")
-                self.readerWebView.load(request)
-                self.webLoadingActivityIndicator.startAnimating()
-            }
+        let pageNumberInt64 = cloudStore.longLong(forKey: CURRENT_PAGE_NUMBER_KEY)
+        pageNumber = Int(pageNumberInt64)
+        print("page number loaded from cloud storage: \(pageNumber)")
+        
+        var urlString = cloudStore.string(forKey: CURRENT_CHAPTER_URL_KEY) ?? ""
+        if urlString == "" {
+            print("init url from hard-coded string:\(defaultBookContentURLString)")
+            urlString = defaultBookContentURLString
         }
+        
+        let bookContentURL = URL(string: urlString)
+        let request = URLRequest(url: bookContentURL!)
+            print("request url=\(urlString)")
+            self.readerWebView.load(request)
+            self.webLoadingActivityIndicator.startAnimating()
+
     }
 
 // MARK: - Functions for Content Creation
@@ -202,9 +180,11 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 self.renderTextPagesFrom(contenAttributedString:attributedText)
                 
                 self.showPageNumber()
-                
+                                
                 for i in 0..<self.pageTextViews.count {
-                    self.pageTextViews[i].frame = CGRect(x: self.horizontalMargin(), y: CGFloat(i) * fullScreenSize.height + self.verticalMargin(), width: self.pageContentWidth(), height: self.pageContentHeight())
+                    let index = i - self.pageNumber
+
+                    self.pageTextViews[i].frame = CGRect(x: self.horizontalMargin(), y: CGFloat(index) * fullScreenSize.height + self.verticalMargin(), width: self.pageContentWidth(), height: self.pageContentHeight())
                     self.bookPageScrollContentView.addSubview(self.pageTextViews[i])
                 }
             }
@@ -289,9 +269,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
             self.showTheCurrentPage()
             
         }, completion: { (finished: Bool) in
-            print("current Page Number: \(self.pageNumber+1) Total number of Page: \(self.pageTextViews.count)")
+//            print("current Page Number: \(self.pageNumber+1) Total number of Page: \(self.pageTextViews.count)")
         })
         showPageNumber()
+        saveToCloud(pageNumber: pageNumber)
     }
     
     func swipeDown() {
@@ -306,9 +287,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
             self.showTheCurrentPage()
             
         }, completion: { (finished: Bool) in
-            print("current Page Number: \(self.pageNumber+1) Total number of Page: \(self.pageTextViews.count)")
+//            print("current Page Number: \(self.pageNumber+1) Total number of Page: \(self.pageTextViews.count)")
         })
         showPageNumber()
+        saveToCloud(pageNumber: pageNumber)
     }
     
     func showTheCurrentPage() {
