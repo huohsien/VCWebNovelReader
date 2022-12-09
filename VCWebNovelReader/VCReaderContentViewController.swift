@@ -13,7 +13,7 @@ import CloudKit
 let CURRENT_CHAPTER_URL_KEY = "CURRENT_CHAPTER_URL_KEY"
 let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 
-var defaultBookContentURLString = "https://t.hjwzw.com/Read/35728_11012401"
+var defaultBookContentURLString = "https://t.hjwzw.com/Read/48591_23390880"
 let isInitialRun = false
 
 var cloudStore = NSUbiquitousKeyValueStore.default
