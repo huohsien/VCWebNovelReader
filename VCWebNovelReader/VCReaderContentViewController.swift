@@ -13,8 +13,8 @@ import CloudKit
 let CURRENT_CHAPTER_URL_KEY = "CURRENT_CHAPTER_URL_KEY"
 let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 
-var defaultBookContentURLString = "https://t.hjwzw.com/Read/48591_23390880"
-let isInitialRun = false
+var defaultBookContentURLString = "https://t.uukanshu.com/read.aspx?tid=182737&sid=204028"
+let isInitialRun = true
 
 var cloudStore = NSUbiquitousKeyValueStore.default
 
@@ -48,6 +48,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     let _backgroundColor = UIColor.init(red: 26.0 / 255.0, green: 26.0 / 255.0, blue: 26.0 / 255.0, alpha: 1.0)
     let _foregroundColor = UIColor.init(red: 178.0 / 255.0, green: 178.0 / 255.0, blue: 178.0 / 255.0, alpha: 1.0)
     
+//    let readerWebView = WKWebView.init(frame: .zero)
     let readerWebView = WKWebView.init(frame: .zero)
 
     var pageNumber = 0
@@ -102,11 +103,80 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     func loadNextChapter() {
         
         // 黃金屋
+        /*
         readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
+         */
         
         // 和圖書
+        /*
+         */
         
-        self.webLoadingActivityIndicator.startAnimating()
+        // uu看書
+        
+        readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
+            
+            let htmlString:String = html as! String
+            
+            if let doc = try? HTML(html: htmlString, encoding: .utf8) {
+                // get next page url
+                for link in doc.xpath("//a[@id='read_next']") {
+                    guard let nextPageURLComponentString:String = link["href"] else {continue}
+                    
+                    // replace the query items
+                    var url = URL.init(string: defaultBookContentURLString)
+                    url = url?.deletingLastPathComponent()
+                    let urlString = url?.absoluteString
+                    guard let urlComponents = urlString?.split(separator: "?") else {return}
+                    url = URL.init(string: urlComponents[0]+nextPageURLComponentString)
+                    print("load the next page. url= \(url!)")
+
+                    let request = URLRequest(url: url!)
+                    self.readerWebView.load(request)
+                    self.webLoadingActivityIndicator.startAnimating()
+                }
+            }
+        })
+        
+//        self.webLoadingActivityIndicator.startAnimating()
+
+    }
+    
+    func loadPreviousChapter() {
+        
+        // 黃金屋
+        /*
+        readerWebView.evaluateJavaScript("JumpPrev();", completionHandler: nil)
+         */
+        // 和圖書
+        /*
+         */
+        // uu看書
+        
+        readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
+            
+            let htmlString:String = html as! String
+            
+            if let doc = try? HTML(html: htmlString, encoding: .utf8) {
+                // get next page url
+                for link in doc.xpath("//a[@id='read_pre']") {
+                    guard let nextPageURLComponentString:String = link["href"] else {continue}
+                    
+                    // replace the query items
+                    var url = URL.init(string: defaultBookContentURLString)
+                    url = url?.deletingLastPathComponent()
+                    let urlString = url?.absoluteString
+                    guard let urlComponents = urlString?.split(separator: "?") else {return}
+                    url = URL.init(string: urlComponents[0]+nextPageURLComponentString)
+                    print("load the previous page. url= \(url!)")
+
+                    let request = URLRequest(url: url!)
+                    self.readerWebView.load(request)
+                    self.webLoadingActivityIndicator.startAnimating()
+                }
+            }
+        })
+        
+//        self.webLoadingActivityIndicator.startAnimating()
 
     }
     
@@ -160,8 +230,16 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     contentString = chapterTitle + "\n\n"
                 
                 // 黃金屋
-                
+                /*
                 for p in doc.xpath("//div[@id='Lab_Contents']/p") {
+                    let pp = p.text!.trimmingCharacters(in: .whitespaces)
+                    contentString += pp
+                }
+                */
+                
+                // uu看書
+                
+                for p in doc.xpath("//div[@id='bookContent']/p") {
                     let pp = p.text!.trimmingCharacters(in: .whitespaces)
                     contentString += pp
                 }
@@ -280,6 +358,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         pageNumber -= 1
         if pageNumber < 0 {
             pageNumber = 0
+            
+            removeAllPageTextViews()
+            pageTextViews = [VCTextView]()
+            loadPreviousChapter()
         }
         
         let animationOptions: UIView.AnimationOptions = .curveEaseIn
