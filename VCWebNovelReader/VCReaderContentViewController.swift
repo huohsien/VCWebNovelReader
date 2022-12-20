@@ -13,8 +13,8 @@ import CloudKit
 let CURRENT_CHAPTER_URL_KEY = "CURRENT_CHAPTER_URL_KEY"
 let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 
-var defaultBookContentURLString = "https://t.uukanshu.com/read.aspx?tid=182737&sid=204028"
-let isInitialRun = true
+var defaultBookContentURLString = "https://t.hjwzw.com/Read/48584_23530171"
+let isInitialRun = false
 
 var cloudStore = NSUbiquitousKeyValueStore.default
 
@@ -44,6 +44,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     let _textLineSpacing:CGFloat = 10.0
     let _charactersSpacing:CGFloat = 0.5
     let _chapterContentFontSize:CGFloat = 27.0
+    var _firstLineHeadIndent:CGFloat = -1.0 // to handle the text formatting that does not need indentation
     
     let _backgroundColor = UIColor.init(red: 26.0 / 255.0, green: 26.0 / 255.0, blue: 26.0 / 255.0, alpha: 1.0)
     let _foregroundColor = UIColor.init(red: 178.0 / 255.0, green: 178.0 / 255.0, blue: 178.0 / 255.0, alpha: 1.0)
@@ -103,16 +104,16 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     func loadNextChapter() {
         
         // 黃金屋
-        /*
+
         readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
-         */
+
         
         // 和圖書
         /*
          */
         
         // uu看書
-        
+        /*
         readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
             
             let htmlString:String = html as! String
@@ -136,22 +137,22 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
             }
         })
-        
-//        self.webLoadingActivityIndicator.startAnimating()
+        */
+        self.webLoadingActivityIndicator.startAnimating()
 
     }
     
     func loadPreviousChapter() {
         
         // 黃金屋
-        /*
+
         readerWebView.evaluateJavaScript("JumpPrev();", completionHandler: nil)
-         */
+
         // 和圖書
         /*
          */
         // uu看書
-        
+        /*
         readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
             
             let htmlString:String = html as! String
@@ -175,8 +176,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
             }
         })
-        
-//        self.webLoadingActivityIndicator.startAnimating()
+        */
+        self.webLoadingActivityIndicator.startAnimating()
 
     }
     
@@ -226,23 +227,47 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
             if let doc = try? HTML(html: htmlString, encoding: .utf8) {
                 // get content
                 var contentString = ""
-                let chapterTitle:String = doc.title!
+                var chapterTitle:String = doc.title!
+                
+                if chapterTitle.starts(with: "\n") {
+                    chapterTitle = String(chapterTitle.dropFirst())
+                }
+                if chapterTitle.hasSuffix("\n") {
+                    chapterTitle = String(chapterTitle.dropLast())
+                }
                     contentString = chapterTitle + "\n\n"
                 
                 // 黃金屋
-                /*
                 for p in doc.xpath("//div[@id='Lab_Contents']/p") {
                     let pp = p.text!.trimmingCharacters(in: .whitespaces)
                     contentString += pp
                 }
-                */
                 
                 // uu看書
-                
-                for p in doc.xpath("//div[@id='bookContent']/p") {
-                    let pp = p.text!.trimmingCharacters(in: .whitespaces)
-                    contentString += pp
+                /*
+                self._firstLineHeadIndent = 0.0
+                let divs = doc.xpath("//div[@id='read-page']/div")
+                for div in divs {
+                    if div.className == "rp-article bookContent uu_cont" {
+                        let ps = div.xpath("./p")
+                        if ps.count < 10 {
+                            let html = div.innerHTML
+                            contentString += html!
+                            
+                        } else {
+                            for p in ps {
+                                var lineString =  p.text!
+                                contentString += "  " + lineString + ""
+                            }
+                        }
+                        
+                    }
                 }
+                contentString = contentString.replacingOccurrences(of: "<br><br>", with: "<br>")
+                contentString = contentString.replacingOccurrences(of: "<br>", with: "\n")
+                // get rid of <div> </div> pair
+                
+                */
                 
                 // 和圖書
                 /*
@@ -297,9 +322,9 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         
         let workingAttributedString = NSMutableAttributedString.init(string: string)
         let paragraphStyle = NSMutableParagraphStyle.init()
-        paragraphStyle.lineSpacing = _textLineSpacing;
-        paragraphStyle.firstLineHeadIndent = _chapterContentFontSize * 2.0 + _charactersSpacing * 3.0;
-        paragraphStyle.alignment = .justified;
+        paragraphStyle.lineSpacing = _textLineSpacing
+        paragraphStyle.firstLineHeadIndent = _firstLineHeadIndent < 0 ? (_chapterContentFontSize * 2.0 + _charactersSpacing * 3.0) : _firstLineHeadIndent
+        paragraphStyle.alignment = .justified
         let font = UIFont.systemFont(ofSize: _chapterContentFontSize)
         
         let attributionDict = [NSAttributedString.Key.paragraphStyle: paragraphStyle, NSAttributedString.Key.font: font, NSAttributedString.Key.backgroundColor: _backgroundColor, NSAttributedString.Key.foregroundColor: _foregroundColor]
