@@ -13,8 +13,8 @@ import CloudKit
 let CURRENT_CHAPTER_URL_KEY = "CURRENT_CHAPTER_URL_KEY"
 let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 
-var defaultBookContentURLString = "https://t.hjwzw.com/Read/48584_23530171"
-let isInitialRun = false
+var defaultBookContentURLString = "https://www.ptwxz.com/html/15/15140/10247548.html"
+let isInitialRun = true
 
 var cloudStore = NSUbiquitousKeyValueStore.default
 
@@ -104,9 +104,9 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     func loadNextChapter() {
         
         // 黃金屋
-
+        /*
         readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
-
+        */
         
         // 和圖書
         /*
@@ -138,6 +138,9 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
             }
         })
         */
+        
+        // 飄天文學
+        
         self.webLoadingActivityIndicator.startAnimating()
 
     }
@@ -145,12 +148,14 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     func loadPreviousChapter() {
         
         // 黃金屋
-
+        /*
         readerWebView.evaluateJavaScript("JumpPrev();", completionHandler: nil)
-
+        */
+        
         // 和圖書
         /*
          */
+        
         // uu看書
         /*
         readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
@@ -228,7 +233,6 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 // get content
                 var contentString = ""
                 var chapterTitle:String = doc.title!
-                
                 if chapterTitle.starts(with: "\n") {
                     chapterTitle = String(chapterTitle.dropFirst())
                 }
@@ -236,12 +240,14 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     chapterTitle = String(chapterTitle.dropLast())
                 }
                     contentString = chapterTitle + "\n\n"
-                
+
                 // 黃金屋
+                /*
                 for p in doc.xpath("//div[@id='Lab_Contents']/p") {
                     let pp = p.text!.trimmingCharacters(in: .whitespaces)
                     contentString += pp
                 }
+                */
                 
                 // uu看書
                 /*
@@ -278,6 +284,29 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     contentString += "\n"
                 }
                 */
+                // 飄天文學
+
+                self._firstLineHeadIndent = 0.0
+                if let contentOuterElement:XMLElement = doc.xpath("//div[@id='content']").first {
+                    for h1 in doc.xpath("//div[@id='content']/h1") {
+                        contentOuterElement.removeChild(h1)
+                    }
+                    for div in doc.xpath("//div[@id='content']/div") {
+                        contentOuterElement.removeChild(div)
+                    }
+                    for t in doc.xpath("//div[@id='content']/table") {
+                        contentOuterElement.removeChild(t)
+                    }
+                    if let html = contentOuterElement.innerHTML {
+                        if let range = html.range(of:"<br>") {
+                            contentString += html.replacingCharacters(in: range, with:"").trimmingCharacters(in: .whitespacesAndNewlines)
+                            contentString = contentString.replacingOccurrences(of: "<br><br>", with: "<br>")
+                            contentString = contentString.replacingOccurrences(of: "<br>", with: "\n")
+//                            print("contentString= \(contentString)")
+                        }
+                    }
+                }
+
                 
                 let attributedText = self.createAttributiedChapterContentStringFrom(string: contentString)
                 self.renderTextPagesFrom(contenAttributedString:attributedText)
@@ -350,7 +379,9 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         
         for i in 0..<pageTextViews.count {
             let pageTextView = pageTextViews[i]
-            pageTextView.frame = CGRectMake(pageTextView.frame.origin.x, pageTextView.frame.origin.y + _deltaOffset, pageTextView.frame.size.width, pageTextView.frame.size.height)
+//            pageTextView.frame = CGRectMake(pageTextView.frame.origin.x, pageTextView.frame.origin.y + _deltaOffset, pageTextView.frame.size.width, pageTextView.frame.size.height)
+            pageTextView.frame = CGRect(x: pageTextView.frame.origin.x, y: pageTextView.frame.origin.y + _deltaOffset, width: pageTextView.frame.size.width, height: pageTextView.frame.size.height)
+
         }
 
     }
@@ -406,8 +437,9 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
             
             let fullPageHeight = pageContentHeight() + 2 * verticalMargin()
             let pageTextView = pageTextViews[i]
-            pageTextView.frame = CGRectMake(pageTextView.frame.origin.x, CGFloat(index) * fullPageHeight + verticalMargin(), pageContentWidth(), pageContentHeight())
-        
+//            pageTextView.frame = CGRectMake(pageTextView.frame.origin.x, CGFloat(index) * fullPageHeight + verticalMargin(), pageContentWidth(), pageContentHeight())
+            pageTextView.frame = CGRect(x: pageTextView.frame.origin.x, y: CGFloat(index) * fullPageHeight + verticalMargin(), width: pageContentWidth(), height: pageContentHeight())
+
         }
     }
 // MARK: - Functions for Touch Interactions
