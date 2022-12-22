@@ -13,8 +13,8 @@ import CloudKit
 let CURRENT_CHAPTER_URL_KEY = "CURRENT_CHAPTER_URL_KEY"
 let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 
-var defaultBookContentURLString = "https://www.ptwxz.com/html/15/15140/10247548.html"
-let isInitialRun = true
+var defaultBookContentURLString = "https://www.ptwxz.com/html/15/15140/10252627.html"
+let isInitialRun = false
 
 var cloudStore = NSUbiquitousKeyValueStore.default
 
@@ -140,6 +140,34 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         */
         
         // 飄天文學
+        readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
+            
+            let htmlString:String = html as! String
+            
+            if let doc = try? HTML(html: htmlString, encoding: .utf8) {
+                // get next page url
+                for a in doc.xpath("//div[@class='bottomlink']/a") {
+//                    print("a.text= \(a.text!)")
+                    if a.text == "下一章（快捷键  →）" {    // "（快捷键  ←）上一章"
+                        
+//                        print("a[href]= \(a["href"])")
+                        guard let nextPageURLComponentString:String = a["href"] else {continue}
+
+                        // replace the query items
+                        var url = URL.init(string: defaultBookContentURLString)
+                        url = url?.deletingLastPathComponent()
+                        let urlString = url?.absoluteString
+                        guard let urlComponents = urlString?.split(separator: "?") else {return}
+                        url = URL.init(string: urlComponents[0]+nextPageURLComponentString)
+                        print("load the next page. url= \(url!)")
+
+                        let request = URLRequest(url: url!)
+                        self.readerWebView.load(request)
+                        self.webLoadingActivityIndicator.startAnimating()
+                    }
+                }
+            }
+        })
         
         self.webLoadingActivityIndicator.startAnimating()
 
@@ -182,6 +210,36 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
             }
         })
         */
+        
+        // 飄天文學
+        readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
+            
+            let htmlString:String = html as! String
+            
+            if let doc = try? HTML(html: htmlString, encoding: .utf8) {
+                // get next page url
+                for a in doc.xpath("//div[@class='bottomlink']/a") {
+//                    print("a.text= \(a.text!)")
+                    if a.text == "（快捷键  ←）上一章" {
+                
+//                        print("a[href]= \(a["href"])")
+                        guard let nextPageURLComponentString:String = a["href"] else {continue}
+
+                        // replace the query items
+                        var url = URL.init(string: defaultBookContentURLString)
+                        url = url?.deletingLastPathComponent()
+                        let urlString = url?.absoluteString
+                        guard let urlComponents = urlString?.split(separator: "?") else {return}
+                        url = URL.init(string: urlComponents[0]+nextPageURLComponentString)
+                        print("load the next page. url= \(url!)")
+
+                        let request = URLRequest(url: url!)
+                        self.readerWebView.load(request)
+                        self.webLoadingActivityIndicator.startAnimating()
+                    }
+                }
+            }
+        })
         self.webLoadingActivityIndicator.startAnimating()
 
     }
