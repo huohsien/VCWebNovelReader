@@ -13,7 +13,7 @@ import CloudKit
 let CURRENT_CHAPTER_URL_KEY = "CURRENT_CHAPTER_URL_KEY"
 let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 
-var defaultBookContentURLString = "https://www.ptwxz.com/html/15/15140/10252627.html"
+var defaultBookContentURLString = "https://www.ptwxz.com/html/14/14539/9912103.html"
 let isInitialRun = false
 
 var cloudStore = NSUbiquitousKeyValueStore.default
@@ -43,7 +43,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     let _textLineSpacing:CGFloat = 10.0
     let _charactersSpacing:CGFloat = 0.5
-    let _chapterContentFontSize:CGFloat = 27.0
+    let _chapterContentFontSize:CGFloat = 30.0
     var _firstLineHeadIndent:CGFloat = -1.0 // to handle the text formatting that does not need indentation
     
     let _backgroundColor = UIColor.init(red: 26.0 / 255.0, green: 26.0 / 255.0, blue: 26.0 / 255.0, alpha: 1.0)
@@ -344,7 +344,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 */
                 // 飄天文學
 
-                self._firstLineHeadIndent = 0.0
+                self._firstLineHeadIndent = self._chapterContentFontSize + self._charactersSpacing
                 if let contentOuterElement:XMLElement = doc.xpath("//div[@id='content']").first {
                     for h1 in doc.xpath("//div[@id='content']/h1") {
                         contentOuterElement.removeChild(h1)
