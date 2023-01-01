@@ -12,6 +12,8 @@ import CloudKit
 
 let CURRENT_CHAPTER_URL_KEY = "CURRENT_CHAPTER_URL_KEY"
 let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
+let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
+
 
 var defaultBookContentURLString = "https://www.ptwxz.com/html/14/14539/9912103.html"
 let isInitialRun = false
@@ -74,6 +76,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         if isInitialRun {
             cloudStore.removeObject(forKey: CURRENT_CHAPTER_URL_KEY)
             cloudStore.removeObject(forKey: CURRENT_PAGE_NUMBER_KEY)
+            cloudStore.removeObject(forKey: PREVIOUS_NUMBER_PAGES_KEY)
+
             saveToCloud(pageNumber: 0)
         }
         loadFromCloud()
@@ -254,6 +258,18 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     func saveToCloud(pageNumber: Int) {
         print("save page number to cloud storage: \(pageNumber)")
         cloudStore.set(pageNumber, forKey: CURRENT_PAGE_NUMBER_KEY)
+    }
+    
+    func saveToCloud(previousChapterNumberOfPages: Int) {
+        print("save the number of pages of the previous chapter to cloud storage: \(previousChapterNumberOfPages)")
+        cloudStore.set(previousChapterNumberOfPages, forKey: PREVIOUS_NUMBER_PAGES_KEY)
+    }
+    
+    func loadFromCloudPreviousChapterNumberOfPages()->Int {
+        let pageNumberInt64 = cloudStore.longLong(forKey: PREVIOUS_NUMBER_PAGES_KEY)
+        let previousChapterNumberOfPages = Int(pageNumberInt64)
+        print("load the number of pages of the previous chapter to cloud storage: \(previousChapterNumberOfPages)")
+        return previousChapterNumberOfPages
     }
     
     func loadFromCloud() {
@@ -448,8 +464,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         
         pageNumber += 1
         if pageNumber >= pageTextViews.count {
-            pageNumber = 0
             
+            saveToCloud(previousChapterNumberOfPages: pageTextViews.count - 1)
+            pageNumber = 0
+                        
             removeAllPageTextViews()
             pageTextViews = [VCTextView]()
             loadNextChapter()
@@ -471,7 +489,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         
         pageNumber -= 1
         if pageNumber < 0 {
-            pageNumber = 0
+            pageNumber = loadFromCloudPreviousChapterNumberOfPages()
             
             removeAllPageTextViews()
             pageTextViews = [VCTextView]()
