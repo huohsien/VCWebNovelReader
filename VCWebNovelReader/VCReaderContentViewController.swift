@@ -95,6 +95,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
 
         let urlString = readerWebView.url!.absoluteString
         saveToCloud(urlString: urlString)
+        saveToCloud(pageNumber: pageNumber)
+
         
         generateTextViewsFromWebResponse()
     }
