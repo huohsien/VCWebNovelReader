@@ -15,7 +15,7 @@ let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 
 
-var defaultBookContentURLString = "https://www.ptwxz.com/html/14/14539/9912103.html"
+var defaultBookContentURLString = "https://sj.uukanshu.com/read.aspx?tid=140915&sid=36611"
 let isInitialRun = false
 
 var cloudStore = NSUbiquitousKeyValueStore.default
@@ -119,7 +119,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
          */
         
         // uu看書
-        /*
+        /* */
         readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
             
             let htmlString:String = html as! String
@@ -143,9 +143,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
             }
         })
-        */
+        
         
         // 飄天文學
+        /*
         readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
             
             let htmlString:String = html as! String
@@ -174,6 +175,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
             }
         })
+        */
         
         self.webLoadingActivityIndicator.startAnimating()
 
@@ -191,7 +193,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
          */
         
         // uu看書
-        /*
+        /**/
         readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
             
             let htmlString:String = html as! String
@@ -215,9 +217,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
             }
         })
-        */
+        
         
         // 飄天文學
+        /*
         readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
             
             let htmlString:String = html as! String
@@ -246,6 +249,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
             }
         })
+         */
+         
         self.webLoadingActivityIndicator.startAnimating()
 
     }
@@ -326,30 +331,94 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 */
                 
                 // uu看書
-                /*
+                /**/
                 self._firstLineHeadIndent = 0.0
-                let divs = doc.xpath("//div[@id='read-page']/div")
-                for div in divs {
-                    if div.className == "rp-article bookContent uu_cont" {
-                        let ps = div.xpath("./p")
-                        if ps.count < 10 {
-                            let html = div.innerHTML
-                            contentString += html!
-                            
-                        } else {
-                            for p in ps {
-                                var lineString =  p.text!
-                                contentString += "  " + lineString + ""
+                if let contentRootElement:XMLElement = doc.xpath("//div[@id='bookContent']").first {
+                    let ps = doc.xpath("//div[@id='bookContent']/p")
+                    var pCount = 0
+                    var workingString = ""
+                    for p in ps {
+                        if let pString = p.text {
+                            if pString.count > 1000 {
+                                // one p tag contains the whole chapter string
+                                workingString += pString
                             }
+                            pCount += 1
+                        }
+                    }
+                    
+                    if pCount == 1 {
+                        // one p tag contains the whole chapter string
+                        
+                        //remove extra leading newline
+                        if let range = workingString.range(of:"\n") {
+                            workingString = workingString.replacingCharacters(in: range, with:"")
                         }
                         
+                        //remove extra newlines
+                        workingString = workingString.replacingOccurrences(of: "\n\n", with: "\n")
+                        
+                        contentString += workingString
+                        
+                    } else {
+                        
+                        if pCount > 30 {
+                            // one p tag represents one line of text
+                            for p in ps {
+                                if let pString = p.text {
+                                    if pString.count > 1000 {
+                                        print ("Parsing Error: too many large p tags")
+                                        return
+                                    }
+                                    contentString += pString.trimmingCharacters(in: .whitespacesAndNewlines)
+                                }
+                            }
+                            
+                        } else {
+                            
+                            // p tags are garbage. text is in the inner html
+                            
+                            // use default format
+                            self._firstLineHeadIndent = -1.0
+                            
+                            // remove p tags
+                            for p in ps {
+                                if let pString = p.text {
+                                    if pString.count < 1000 {
+                                        // remove garbage p tags
+                                        contentRootElement.removeChild(p)
+                                    }
+                                }
+                            }
+                            // remove div tags
+                            let divs = doc.xpath("//div[@id='bookContent']/div")
+                            for div in divs {
+                                contentRootElement.removeChild(div)
+                            }
+                            
+                            // remove leading <br>
+                            if let html = contentRootElement.innerHTML {
+                                if let targetRange = html.range(of:"<br>") {
+                                    let range = html.startIndex..<targetRange.upperBound
+                                    workingString += html.replacingCharacters(in: range, with:"").trimmingCharacters(in: .whitespacesAndNewlines)
+                                }
+                            }
+                            
+                            for line in workingString.components(separatedBy: "<br><br>") {
+                                contentString += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+//                                print("line= \(line)")
+                            }
+                            
+                        }
                     }
+//                    print("contentString= \(contentString)")
                 }
+
                 contentString = contentString.replacingOccurrences(of: "<br><br>", with: "<br>")
                 contentString = contentString.replacingOccurrences(of: "<br>", with: "\n")
                 // get rid of <div> </div> pair
                 
-                */
+            
                 
                 // 和圖書
                 /*
@@ -361,7 +430,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
                 */
                 // 飄天文學
-
+                /*
                 self._firstLineHeadIndent = self._chapterContentFontSize + self._charactersSpacing
                 if let contentOuterElement:XMLElement = doc.xpath("//div[@id='content']").first {
                     for h1 in doc.xpath("//div[@id='content']/h1") {
@@ -383,6 +452,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     }
                 }
 
+                */
                 
                 let attributedText = self.createAttributiedChapterContentStringFrom(string: contentString)
                 self.renderTextPagesFrom(contenAttributedString:attributedText)
