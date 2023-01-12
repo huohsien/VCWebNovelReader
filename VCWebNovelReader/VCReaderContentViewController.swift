@@ -347,7 +347,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                         }
                     }
                     
-                    if pCount == 1 {
+                    if workingString.count > 1000 {
                         // one p tag contains the whole chapter string
                         
                         //remove extra leading newline
@@ -411,7 +411,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                             
                         }
                     }
-//                    print("contentString= \(contentString)")
+                    print("contentString= \(contentString)")
                 }
 
                 contentString = contentString.replacingOccurrences(of: "<br><br>", with: "<br>")
