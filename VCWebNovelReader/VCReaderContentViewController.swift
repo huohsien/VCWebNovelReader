@@ -363,14 +363,19 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     } else {
                         
                         if pCount > 30 {
+                            
                             // one p tag represents one line of text
+                            
+                            // use default format
+                            self._firstLineHeadIndent = -1.0
+                            
                             for p in ps {
                                 if let pString = p.text {
                                     if pString.count > 1000 {
                                         print ("Parsing Error: too many large p tags")
                                         return
                                     }
-                                    contentString += pString.trimmingCharacters(in: .whitespacesAndNewlines)
+                                    contentString += pString.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
                                 }
                             }
                             
