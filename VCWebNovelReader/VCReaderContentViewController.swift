@@ -409,7 +409,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                                 }
                             }
                             
-                            for line in workingString.components(separatedBy: "<br><br>") {
+                            for line in workingString.components(separatedBy: "<br>") {
+                                if line.isEmpty {
+                                    continue
+                                }
                                 contentString += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
 //                                print("line= \(line)")
                             }
