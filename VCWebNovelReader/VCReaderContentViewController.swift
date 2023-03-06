@@ -15,7 +15,7 @@ let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 
 
-var defaultBookContentURLString = "https://sj.uukanshu.com/read.aspx?tid=17077&sid=269170"
+var defaultBookContentURLString = "https://t.uukanshu.com/read.aspx?tid=121477&sid=37272"
 let isInitialRun = false
 
 var cloudStore = NSUbiquitousKeyValueStore.default
