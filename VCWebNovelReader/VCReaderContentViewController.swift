@@ -22,6 +22,22 @@ var cloudStore = NSUbiquitousKeyValueStore.default
 
 var fullScreenSize:CGSize = .zero
 
+extension String {
+
+   func removePTag() -> String {
+
+       let workingString = self.replacingOccurrences(of: "<p[^>]+>", with: "", options: String.CompareOptions.regularExpression, range: nil)
+       return workingString.replacingOccurrences(of: "</p>", with: "", options: String.CompareOptions.regularExpression, range: nil)
+
+    }
+    func removeRemarkTag() -> String {
+        
+        return self.replacingOccurrences(of: "<![^>]+>", with: "", options: String.CompareOptions.regularExpression, range: nil)
+        
+    }
+
+}
+
 class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITextViewDelegate {
 
     private let database = CKContainer(identifier: "iCloud.com.VHHC.VCWebNovelReader").publicCloudDatabase
@@ -298,7 +314,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
             self.webLoadingActivityIndicator.startAnimating()
 
     }
-
+    
 // MARK: - Functions for Content Creation
     func showPageNumber() {
         self.pageNumberLabel.text = "\(pageNumber+1) / \(self.pageTextViews.count)"
@@ -332,11 +348,54 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 
                 // uu看書
                 /**/
-                self._firstLineHeadIndent = 0.0
+                // use default format
+                self._firstLineHeadIndent = -1.0
                 if let contentRootElement:XMLElement = doc.xpath("//div[@id='bookContent']").first {
-                    let ps = doc.xpath("//div[@id='bookContent']/p")
-                    var pCount = 0
-                    var workingString = ""
+//                    let ps = doc.xpath("//div[@id='bookContent']/p")
+//                    var pCount = 0
+                    
+                    // remove div tags
+                    let divs = doc.xpath("//div[@id='bookContent']/div")
+                    for div in divs {
+                        contentRootElement.removeChild(div)
+                    }
+                    
+                    /*
+                    // remove leading <br>
+                    if let html = contentRootElement.innerHTML {
+                        if let targetRange = html.range(of:"<br>") {
+                            let range = html.startIndex..<targetRange.upperBound
+                            workingString += html.replacingCharacters(in: range, with:"").trimmingCharacters(in: .whitespacesAndNewlines)
+                        }
+                    }
+                    */
+                    guard let htmlString = contentRootElement.innerHTML else {
+                        print("Error: HTML text conversion failed")
+                        return
+                    }
+                    var workingString1 = ""
+                    var workingString2 = ""
+
+                    workingString1 = htmlString.removePTag()
+                    workingString1 = workingString1.removeRemarkTag()
+                    
+                    for line in workingString1.components(separatedBy: "<br>") {
+                        if line.isEmpty {
+                            continue
+                        }
+                        workingString2 += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+//                                print("line= \(line)")
+                    }
+                    for line in workingString2.components(separatedBy: "\n") {
+                        if line.isEmpty {
+                            continue
+                        }
+                        contentString += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+//                                print("line= \(line)")
+                    }
+                    
+
+                    /*
                     for p in ps {
                         if let pString = p.text {
                             if pString.count > 1000 {
@@ -419,6 +478,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                             
                         }
                     }
+                     */
                     print("contentString= \(contentString)")
                 }
 
