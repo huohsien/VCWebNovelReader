@@ -15,12 +15,15 @@ let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 
 
-var defaultBookContentURLString = "https://t.uukanshu.com/read.aspx?tid=121477&sid=37272"
+var defaultBookContentURLString = "https://sj.uukanshu.com/read.aspx?tid=197450&sid=188110"
 let isInitialRun = false
 
 var cloudStore = NSUbiquitousKeyValueStore.default
 
 var fullScreenSize:CGSize = .zero
+
+
+    
 
 extension String {
 
@@ -39,7 +42,11 @@ extension String {
 }
 
 class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITextViewDelegate {
-
+    enum WebNovelSource {
+        case 黃金屋
+        case uu看書
+    }
+    
     private let database = CKContainer(identifier: "iCloud.com.VHHC.VCWebNovelReader").publicCloudDatabase
     
     @IBOutlet weak var pageContentView: UIView!
@@ -48,6 +55,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     @IBOutlet weak var webLoadingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var pageNumberLabel: UILabel!
     
+    let webNovelSource:WebNovelSource = .uu看書
     // touch
     var _lastTouchedPointX:CGFloat = 0.0
     var _lastTouchedPointY:CGFloat = 0.0
@@ -125,40 +133,40 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     func loadNextChapter() {
         
-        // 黃金屋
-        /*
-        readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
-        */
+        if (webNovelSource == .黃金屋) {
+            readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
+        }
+        
         
         // 和圖書
         /*
          */
         
-        // uu看書
-        /* */
-        readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
-            
-            let htmlString:String = html as! String
-            
-            if let doc = try? HTML(html: htmlString, encoding: .utf8) {
-                // get next page url
-                for link in doc.xpath("//a[@id='read_next']") {
-                    guard let nextPageURLComponentString:String = link["href"] else {continue}
-                    
-                    // replace the query items
-                    var url = URL.init(string: defaultBookContentURLString)
-                    url = url?.deletingLastPathComponent()
-                    let urlString = url?.absoluteString
-                    guard let urlComponents = urlString?.split(separator: "?") else {return}
-                    url = URL.init(string: urlComponents[0]+nextPageURLComponentString)
-                    print("load the next page. url= \(url!)")
+        if (webNovelSource == .uu看書) {
+            readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
+                
+                let htmlString:String = html as! String
+                
+                if let doc = try? HTML(html: htmlString, encoding: .utf8) {
+                    // get next page url
+                    for link in doc.xpath("//a[@id='read_next']") {
+                        guard let nextPageURLComponentString:String = link["href"] else {continue}
+                        
+                        // replace the query items
+                        var url = URL.init(string: defaultBookContentURLString)
+                        url = url?.deletingLastPathComponent()
+                        let urlString = url?.absoluteString
+                        guard let urlComponents = urlString?.split(separator: "?") else {return}
+                        url = URL.init(string: urlComponents[0]+nextPageURLComponentString)
+                        print("load the next page. url= \(url!)")
 
-                    let request = URLRequest(url: url!)
-                    self.readerWebView.load(request)
-                    self.webLoadingActivityIndicator.startAnimating()
+                        let request = URLRequest(url: url!)
+                        self.readerWebView.load(request)
+                        self.webLoadingActivityIndicator.startAnimating()
+                    }
                 }
-            }
-        })
+            })
+        }
         
         
         // 飄天文學
@@ -199,42 +207,42 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     func loadPreviousChapter() {
         
-        // 黃金屋
-        /*
-        readerWebView.evaluateJavaScript("JumpPrev();", completionHandler: nil)
-        */
+        if (webNovelSource == .黃金屋) {
+            readerWebView.evaluateJavaScript("JumpPrev();", completionHandler: nil)
+        }
+        
         
         // 和圖書
         /*
          */
         
-        // uu看書
-        /**/
-        readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
-            
-            let htmlString:String = html as! String
-            
-            if let doc = try? HTML(html: htmlString, encoding: .utf8) {
-                // get next page url
-                for link in doc.xpath("//a[@id='read_pre']") {
-                    guard let nextPageURLComponentString:String = link["href"] else {continue}
-                    
-                    // replace the query items
-                    var url = URL.init(string: defaultBookContentURLString)
-                    url = url?.deletingLastPathComponent()
-                    let urlString = url?.absoluteString
-                    guard let urlComponents = urlString?.split(separator: "?") else {return}
-                    url = URL.init(string: urlComponents[0]+nextPageURLComponentString)
-                    print("load the previous page. url= \(url!)")
+        if (webNovelSource == .uu看書) {
+            readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
+                
+                let htmlString:String = html as! String
+                
+                if let doc = try? HTML(html: htmlString, encoding: .utf8) {
+                    // get next page url
+                    for link in doc.xpath("//a[@id='read_pre']") {
+                        guard let nextPageURLComponentString:String = link["href"] else {continue}
+                        
+                        // replace the query items
+                        var url = URL.init(string: defaultBookContentURLString)
+                        url = url?.deletingLastPathComponent()
+                        let urlString = url?.absoluteString
+                        guard let urlComponents = urlString?.split(separator: "?") else {return}
+                        url = URL.init(string: urlComponents[0]+nextPageURLComponentString)
+                        print("load the previous page. url= \(url!)")
 
-                    let request = URLRequest(url: url!)
-                    self.readerWebView.load(request)
-                    self.webLoadingActivityIndicator.startAnimating()
+                        let request = URLRequest(url: url!)
+                        self.readerWebView.load(request)
+                        self.webLoadingActivityIndicator.startAnimating()
+                    }
                 }
-            }
-        })
-        
-        
+            })
+
+        }
+                
         // 飄天文學
         /*
         readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
@@ -338,155 +346,154 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
                     contentString = chapterTitle + "\n\n"
 
-                // 黃金屋
-                /*
-                for p in doc.xpath("//div[@id='Lab_Contents']/p") {
-                    let pp = p.text!.trimmingCharacters(in: .whitespaces)
-                    contentString += pp
-                }
-                */
-                
-                // uu看書
-                /**/
-                // use default format
-                self._firstLineHeadIndent = -1.0
-                if let contentRootElement:XMLElement = doc.xpath("//div[@id='bookContent']").first {
-//                    let ps = doc.xpath("//div[@id='bookContent']/p")
-//                    var pCount = 0
-                    
-                    // remove div tags
-                    let divs = doc.xpath("//div[@id='bookContent']/div")
-                    for div in divs {
-                        contentRootElement.removeChild(div)
+                if (self.webNovelSource == .黃金屋) {
+                    for p in doc.xpath("//div[@id='Lab_Contents']/p") {
+                        let pp = p.text!.trimmingCharacters(in: .whitespaces)
+                        contentString += pp
                     }
-                    
-                    /*
-                    // remove leading <br>
-                    if let html = contentRootElement.innerHTML {
-                        if let targetRange = html.range(of:"<br>") {
-                            let range = html.startIndex..<targetRange.upperBound
-                            workingString += html.replacingCharacters(in: range, with:"").trimmingCharacters(in: .whitespacesAndNewlines)
-                        }
-                    }
-                    */
-                    guard let htmlString = contentRootElement.innerHTML else {
-                        print("Error: HTML text conversion failed")
-                        return
-                    }
-                    var workingString1 = ""
-                    var workingString2 = ""
-
-                    workingString1 = htmlString.removePTag()
-                    workingString1 = workingString1.removeRemarkTag()
-                    
-                    for line in workingString1.components(separatedBy: "<br>") {
-                        if line.isEmpty {
-                            continue
-                        }
-                        workingString2 += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
-//                                print("line= \(line)")
-                    }
-                    for line in workingString2.components(separatedBy: "\n") {
-                        if line.isEmpty {
-                            continue
-                        }
-                        contentString += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
-//                                print("line= \(line)")
-                    }
-                    
-
-                    /*
-                    for p in ps {
-                        if let pString = p.text {
-                            if pString.count > 1000 {
-                                // one p tag contains the whole chapter string
-                                workingString += pString
-                            }
-                            pCount += 1
-                        }
-                    }
-                    
-                    if workingString.count > 1000 {
-                        // one p tag contains the whole chapter string
-                        
-                        //remove extra leading newline
-                        if let range = workingString.range(of:"\n") {
-                            workingString = workingString.replacingCharacters(in: range, with:"")
-                        }
-                        
-                        //remove extra newlines
-                        workingString = workingString.replacingOccurrences(of: "\n\n", with: "\n")
-                        
-                        contentString += workingString
-                        
-                    } else {
-                        
-                        if pCount > 30 {
-                            
-                            // one p tag represents one line of text
-                            
-                            // use default format
-                            self._firstLineHeadIndent = -1.0
-                            
-                            for p in ps {
-                                if let pString = p.text {
-                                    if pString.count > 1000 {
-                                        print ("Parsing Error: too many large p tags")
-                                        return
-                                    }
-                                    contentString += pString.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
-                                }
-                            }
-                            
-                        } else {
-                            
-                            // p tags are garbage. text is in the inner html
-                            
-                            // use default format
-                            self._firstLineHeadIndent = -1.0
-                            
-                            // remove p tags
-                            for p in ps {
-                                if let pString = p.text {
-                                    if pString.count < 1000 {
-                                        // remove garbage p tags
-                                        contentRootElement.removeChild(p)
-                                    }
-                                }
-                            }
-                            // remove div tags
-                            let divs = doc.xpath("//div[@id='bookContent']/div")
-                            for div in divs {
-                                contentRootElement.removeChild(div)
-                            }
-                            
-                            // remove leading <br>
-                            if let html = contentRootElement.innerHTML {
-                                if let targetRange = html.range(of:"<br>") {
-                                    let range = html.startIndex..<targetRange.upperBound
-                                    workingString += html.replacingCharacters(in: range, with:"").trimmingCharacters(in: .whitespacesAndNewlines)
-                                }
-                            }
-                            
-                            for line in workingString.components(separatedBy: "<br>") {
-                                if line.isEmpty {
-                                    continue
-                                }
-                                contentString += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
-//                                print("line= \(line)")
-                            }
-                            
-                        }
-                    }
-                     */
-                    print("contentString= \(contentString)")
                 }
 
-                contentString = contentString.replacingOccurrences(of: "<br><br>", with: "<br>")
-                contentString = contentString.replacingOccurrences(of: "<br>", with: "\n")
-                // get rid of <div> </div> pair
                 
-            
+                
+                if (self.webNovelSource == .uu看書) {
+                    // use default format
+                    self._firstLineHeadIndent = -1.0
+                    if let contentRootElement:XMLElement = doc.xpath("//div[@id='bookContent']").first {
+    //                    let ps = doc.xpath("//div[@id='bookContent']/p")
+    //                    var pCount = 0
+                        
+                        // remove div tags
+                        let divs = doc.xpath("//div[@id='bookContent']/div")
+                        for div in divs {
+                            contentRootElement.removeChild(div)
+                        }
+                        
+                        
+    //                    // remove leading <br>
+    //                    if let html = contentRootElement.innerHTML {
+    //                        if let targetRange = html.range(of:"<br>") {
+    //                            let range = html.startIndex..<targetRange.upperBound
+    //                            workingString += html.replacingCharacters(in: range, with:"").trimmingCharacters(in: .whitespacesAndNewlines)
+    //                        }
+    //                    }
+                        
+                        guard let htmlString = contentRootElement.innerHTML else {
+                            print("Error: HTML text conversion failed")
+                            return
+                        }
+                        var workingString1 = ""
+                        var workingString2 = ""
+
+                        workingString1 = htmlString.removePTag()
+                        workingString1 = workingString1.removeRemarkTag()
+                        
+                        for line in workingString1.components(separatedBy: "<br>") {
+                            if line.isEmpty {
+                                continue
+                            }
+                            workingString2 += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+    //                                print("line= \(line)")
+                        }
+                        for line in workingString2.components(separatedBy: "\n") {
+                            if line.isEmpty {
+                                continue
+                            }
+                            contentString += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+    //                                print("line= \(line)")
+                        }
+                        
+
+    //                    for p in ps {
+    //                        if let pString = p.text {
+    //                            if pString.count > 1000 {
+    //                                 one p tag contains the whole chapter string
+    //                                workingString += pString
+    //                            }
+    //                            pCount += 1
+    //                        }
+    //                    }
+    //
+    //                    if workingString.count > 1000 {
+    //                         one p tag contains the whole chapter string
+    //
+    //                        remove extra leading newline
+    //                        if let range = workingString.range(of:"\n") {
+    //                            workingString = workingString.replacingCharacters(in: range, with:"")
+    //                        }
+    //
+    //                        remove extra newlines
+    //                        workingString = workingString.replacingOccurrences(of: "\n\n", with: "\n")
+    //
+    //                        contentString += workingString
+    //
+    //                    } else {
+    //
+    //                        if pCount > 30 {
+    //
+    //                             one p tag represents one line of text
+    //
+    //                             use default format
+    //                            self._firstLineHeadIndent = -1.0
+    //
+    //                            for p in ps {
+    //                                if let pString = p.text {
+    //                                    if pString.count > 1000 {
+    //                                        print ("Parsing Error: too many large p tags")
+    //                                        return
+    //                                    }
+    //                                    contentString += pString.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+    //                                }
+    //                            }
+    //
+    //                        } else {
+    //
+    //                             p tags are garbage. text is in the inner html
+    //
+    //                             use default format
+    //                            self._firstLineHeadIndent = -1.0
+    //
+    //                             remove p tags
+    //                            for p in ps {
+    //                                if let pString = p.text {
+    //                                    if pString.count < 1000 {
+    //                                         remove garbage p tags
+    //                                        contentRootElement.removeChild(p)
+    //                                    }
+    //                                }
+    //                            }
+    //                             remove div tags
+    //                            let divs = doc.xpath("div[@id='bookContent']/div")
+    //                            for div in divs {
+    //                                contentRootElement.removeChild(div)
+    //                            }
+    //
+    //                             remove leading <br>
+    //                            if let html = contentRootElement.innerHTML {
+    //                                if let targetRange = html.range(of:"<br>") {
+    //                                    let range = html.startIndex..<targetRange.upperBound
+    //                                    workingString += html.replacingCharacters(in: range, with:"").trimmingCharacters(in: .whitespacesAndNewlines)
+    //                                }
+    //                            }
+    //
+    //                            for line in workingString.components(separatedBy: "<br>") {
+    //                                if line.isEmpty {
+    //                                    continue
+    //                                }
+    //                                contentString += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+    //                                print("line= \(line)")
+    //                            }
+    //
+    //                        }
+    //                    }
+                         
+                        print("contentString= \(contentString)")
+                    }
+
+                    contentString = contentString.replacingOccurrences(of: "<br><br>", with: "<br>")
+                    contentString = contentString.replacingOccurrences(of: "<br>", with: "\n")
+                    // get rid of <div> </div> pair
+                }
+                
                 
                 // 和圖書
                 /*
