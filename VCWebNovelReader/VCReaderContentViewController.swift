@@ -15,7 +15,7 @@ let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 
 
-var defaultBookContentURLString = "https://sj.uukanshu.com/read.aspx?tid=197450&sid=188110"
+var defaultBookContentURLString = "https://www.69shu.com/txt/42930/31958825"
 let isInitialRun = false
 
 var cloudStore = NSUbiquitousKeyValueStore.default
@@ -41,10 +41,12 @@ extension String {
 
 }
 
+@available(iOS 16.0, *)
 class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITextViewDelegate {
     enum WebNovelSource {
         case 黃金屋
         case uu看書
+        case 六九書吧
     }
     
     private let database = CKContainer(identifier: "iCloud.com.VHHC.VCWebNovelReader").publicCloudDatabase
@@ -55,7 +57,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     @IBOutlet weak var webLoadingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var pageNumberLabel: UILabel!
     
-    let webNovelSource:WebNovelSource = .uu看書
+    let webNovelSource:WebNovelSource = .六九書吧
     // touch
     var _lastTouchedPointX:CGFloat = 0.0
     var _lastTouchedPointY:CGFloat = 0.0
@@ -168,6 +170,27 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
             })
         }
         
+        if (webNovelSource == .六九書吧) {
+            readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
+                
+                let htmlString:String = html as! String
+                
+                if let doc = try? HTML(html: htmlString, encoding: .utf8) {
+                    // get next page url
+                    for link in doc.xpath("//a[contains(text(),'下一章')]") {
+                        guard let nextPageURLComponentString:String = link["href"] else {continue}
+                        
+                        var url = URL.init(string: "")
+                        url = URL.init(string:nextPageURLComponentString)
+                        print("load the next page. url= \(url!)")
+                        
+                        let request = URLRequest(url: url!)
+                        self.readerWebView.load(request)
+                        self.webLoadingActivityIndicator.startAnimating()
+                    }
+                }
+            })
+        }
         
         // 飄天文學
         /*
@@ -242,7 +265,28 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
             })
 
         }
+        
+        if (webNovelSource == .六九書吧) {
+            readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
                 
+                let htmlString:String = html as! String
+                
+                if let doc = try? HTML(html: htmlString, encoding: .utf8) {
+                    // get next page url
+                    for link in doc.xpath("//a[contains(text(),'上一章')]") {
+                        guard let nextPageURLComponentString:String = link["href"] else {continue}
+                        
+                        let url = URL.init(string:nextPageURLComponentString)
+                        print("load the next page. url= \(url!)")
+
+                        let request = URLRequest(url: url!)
+                        self.readerWebView.load(request)
+                        self.webLoadingActivityIndicator.startAnimating()
+                    }
+                }
+            })
+        }
+        
         // 飄天文學
         /*
         readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
@@ -494,7 +538,56 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     // get rid of <div> </div> pair
                 }
                 
-                
+                // 69書吧
+                if (self.webNovelSource == .六九書吧) {
+                    // use default format
+                    self._firstLineHeadIndent = -1.0
+                    if let contentRootElement:XMLElement = doc.xpath("//div[@class='txtnav']").first {
+
+                        
+                        // remove div tags
+                        let divs = doc.xpath("//div[@class='txtnav']/div")
+                        for div in divs {
+                            contentRootElement.removeChild(div)
+                        }
+                        // remove h1 tags
+                        let h1s = doc.xpath("//div[@class='txtnav']/h1")
+                        for h1 in h1s {
+                            contentRootElement.removeChild(h1)
+                        }
+                        
+                        guard let htmlString = contentRootElement.innerHTML else {
+                            print("Error: HTML text conversion failed")
+                            return
+                        }
+                        var workingString1 = ""
+                        var workingString2 = ""
+
+                        workingString1 = htmlString.removePTag()
+                        workingString1 = workingString1.removeRemarkTag()
+
+                        for line in workingString1.components(separatedBy: "<br>") {
+                            if line.isEmpty {
+                                continue
+                            }
+                            workingString2 += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+    //                                print("line= \(line)")
+                        }
+                        for line in workingString2.components(separatedBy: "\n") {
+                            if line.isEmpty {
+                                continue
+                            }
+                            contentString += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+    //                                print("line= \(line)")
+                        }
+                                                 
+                        print("contentString= \(contentString)")
+                    }
+
+                    contentString = contentString.replacingOccurrences(of: "<br><br>", with: "<br>")
+                    contentString = contentString.replacingOccurrences(of: "<br>", with: "\n")
+                    
+                }
                 // 和圖書
                 /*
                 for div in doc.xpath("//dd[@id='content']/div") {
