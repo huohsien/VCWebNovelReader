@@ -15,7 +15,7 @@ let CURRENT_PAGE_NUMBER_KEY = "CURRENT_PAGE_NUMBER_KEY"
 let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 
 
-var defaultBookContentURLString = "https://www.69shu.com/txt/27232/20321818"
+var defaultBookContentURLString = "https://www.69shuba.com/txt/53029/34481275"
 let isInitialRun = false
 
 var cloudStore = NSUbiquitousKeyValueStore.default
