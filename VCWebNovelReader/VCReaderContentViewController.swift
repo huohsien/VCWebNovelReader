@@ -16,7 +16,11 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 
 
 
-var defaultBookContentURLString = "https://www.69shuba.com/txt/53029/34481275"
+//仙逆
+//var defaultBookContentURLString = "https://www.69shuba.com/txt/53029/34482752"
+
+////莽荒紀
+var defaultBookContentURLString = "https://www.69shuba.com/txt/1191/6094095"
 
 let isInitialRun = false
 
