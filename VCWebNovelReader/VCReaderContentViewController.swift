@@ -19,8 +19,14 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 //仙逆
 //var defaultBookContentURLString = "https://www.69shuba.com/txt/53029/34482752"
 
-////莽荒紀
-var defaultBookContentURLString = "https://www.69shuba.com/txt/1191/6094095"
+//莽荒紀
+//var defaultBookContentURLString = "https://www.69xinshu.com/txt/1191/9950345"
+
+////大明國師
+//var defaultBookContentURLString = "https://www.69shu.pro/txt/46698/35524272"
+
+//明朝败家子
+var defaultBookContentURLString = "https://www.69shu.pro/txt/29612/20561078"
 
 let isInitialRun = false
 
@@ -77,7 +83,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     let _textLineSpacing:CGFloat = 10.0
     let _charactersSpacing:CGFloat = 0.5
-    let _chapterContentFontSize:CGFloat = 30.0
+    let _chapterContentFontSize:CGFloat = 34.0
     var _firstLineHeadIndent:CGFloat = -1.0 // to handle the text formatting that does not need indentation
     
     let _backgroundColor = UIColor.init(red: 26.0 / 255.0, green: 26.0 / 255.0, blue: 26.0 / 255.0, alpha: 1.0)
@@ -729,6 +735,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         })
         showPageNumber()
         saveToCloud(pageNumber: pageNumber)
+        let urlString = readerWebView.url!.absoluteString
+        saveToCloud(urlString: urlString)
     }
     
     func swipeDown() {
@@ -751,6 +759,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         })
         showPageNumber()
         saveToCloud(pageNumber: pageNumber)
+        let urlString = readerWebView.url!.absoluteString
+        saveToCloud(urlString: urlString)
     }
     
     func showTheCurrentPage() {
