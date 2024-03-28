@@ -26,7 +26,7 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 //var defaultBookContentURLString = "https://www.69shu.pro/txt/46698/35524272"
 
 //明朝败家子
-var defaultBookContentURLString = "https://www.69shu.pro/txt/29612/20561078"
+var defaultBookContentURLString = "https://www.69shu.pro/txt/29612/20561845"
 
 let isInitialRun = false
 
