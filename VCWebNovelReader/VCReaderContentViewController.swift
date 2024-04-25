@@ -22,11 +22,14 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 //莽荒紀
 //var defaultBookContentURLString = "https://www.69xinshu.com/txt/1191/9950345"
 
-////大明國師
+//大明國師
 //var defaultBookContentURLString = "https://www.69shu.pro/txt/46698/35524272"
 
 //明朝败家子
-var defaultBookContentURLString = "https://www.69shu.pro/txt/29612/20561845"
+//var defaultBookContentURLString = "https://www.69shu.pro/txt/29612/21748735"
+
+//隋唐君子演義
+var defaultBookContentURLString = "https://t.hjwzw.com/Read/40458_18449722" // chap. 193
 
 let isInitialRun = false
 
@@ -69,7 +72,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     @IBOutlet weak var webLoadingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var pageNumberLabel: UILabel!
     
-    let webNovelSource:WebNovelSource = .六九書吧
+    let webNovelSource:WebNovelSource = .黃金屋
     // touch
     var _lastTouchedPointX:CGFloat = 0.0
     var _lastTouchedPointY:CGFloat = 0.0
