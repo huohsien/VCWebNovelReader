@@ -29,7 +29,11 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 //var defaultBookContentURLString = "https://www.69shu.pro/txt/29612/21748735"
 
 //隋唐君子演義
-var defaultBookContentURLString = "https://t.hjwzw.com/Read/40458_18449722" // chap. 193
+//var defaultBookContentURLString = "https://t.hjwzw.com/Read/40458_19088328" // 黃金屋 chap. 479
+
+//重生野性时代
+var defaultBookContentURLString = "https://www.69shu.top/txt/29413/19824387" // 六九書吧 chap. 103
+
 
 let isInitialRun = false
 
@@ -72,7 +76,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     @IBOutlet weak var webLoadingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var pageNumberLabel: UILabel!
     
-    let webNovelSource:WebNovelSource = .黃金屋
+    let webNovelSource:WebNovelSource = .六九書吧
     // touch
     var _lastTouchedPointX:CGFloat = 0.0
     var _lastTouchedPointY:CGFloat = 0.0
@@ -150,7 +154,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     func loadNextChapter() {
         
-        if (webNovelSource == .黃金屋) {
+        if (webNovelSource == .六九書吧) {
             readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
         }
         
@@ -159,7 +163,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         /*
          */
         
-        if (webNovelSource == .uu看書) {
+        if (webNovelSource == .六九書吧) {
             readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
                 
                 let htmlString:String = html as! String
@@ -245,7 +249,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     func loadPreviousChapter() {
         
-        if (webNovelSource == .黃金屋) {
+        if (webNovelSource == .六九書吧) {
             readerWebView.evaluateJavaScript("JumpPrev();", completionHandler: nil)
         }
         
@@ -254,7 +258,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         /*
          */
         
-        if (webNovelSource == .uu看書) {
+        if (webNovelSource == .六九書吧) {
             readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
                 
                 let htmlString:String = html as! String
@@ -405,7 +409,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
                     contentString = chapterTitle + "\n\n"
 
-                if (self.webNovelSource == .黃金屋) {
+                if (self.webNovelSource == .六九書吧) {
                     for p in doc.xpath("//div[@id='Lab_Contents']/p") {
                         let pp = p.text!.trimmingCharacters(in: .whitespaces)
                         contentString += pp
@@ -414,7 +418,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
 
                 
                 
-                if (self.webNovelSource == .uu看書) {
+                if (self.webNovelSource == .六九書吧) {
                     // use default format
                     self._firstLineHeadIndent = -1.0
                     if let contentRootElement:XMLElement = doc.xpath("//div[@id='bookContent']").first {
