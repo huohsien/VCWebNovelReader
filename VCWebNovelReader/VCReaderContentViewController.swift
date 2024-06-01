@@ -16,23 +16,29 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 
 
 
-//仙逆
+// 仙逆
 //var defaultBookContentURLString = "https://www.69shuba.com/txt/53029/34482752"
 
-//莽荒紀
+// 莽荒紀
 //var defaultBookContentURLString = "https://www.69xinshu.com/txt/1191/9950345"
 
-//大明國師
+// 大明國師
 //var defaultBookContentURLString = "https://www.69shu.pro/txt/46698/35524272"
 
-//明朝败家子
+// 明朝败家子
 //var defaultBookContentURLString = "https://www.69shu.pro/txt/29612/21748735"
 
-//隋唐君子演義
+// 隋唐君子演義
 //var defaultBookContentURLString = "https://t.hjwzw.com/Read/40458_19088328" // 黃金屋 chap. 479
 
-//重生野性时代
-var defaultBookContentURLString = "https://www.69shu.top/txt/29413/19824387" // 六九書吧 chap. 103
+// 重生野性时代
+//var defaultBookContentURLString = "https://www.69shuba.pro/txt/29413/20865376" // 六九書吧 chap. 475
+
+// 重生2003
+//var defaultBookContentURLString = "https://www.69shuba.pro/txt/15217/8904931" // 六九書吧 chap. 143
+
+// 高手寂寞
+var defaultBookContentURLString = "https://t.hjwzw.com/Read/6121_1233778" // 黃金屋 -- 第一節 漸變
 
 
 let isInitialRun = false
@@ -76,7 +82,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     @IBOutlet weak var webLoadingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var pageNumberLabel: UILabel!
     
-    let webNovelSource:WebNovelSource = .六九書吧
+    let webNovelSource:WebNovelSource = .黃金屋
     // touch
     var _lastTouchedPointX:CGFloat = 0.0
     var _lastTouchedPointY:CGFloat = 0.0
@@ -154,14 +160,37 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     func loadNextChapter() {
         
-        if (webNovelSource == .六九書吧) {
+        // 黃金屋
+        if (webNovelSource == .黃金屋) {
             readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
         }
         
-        
-        // 和圖書
+        // 六九書吧
         /*
-         */
+        if (webNovelSource == .六九書吧) {
+            readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
+        }
+        if (webNovelSource == .六九書吧) {
+            readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
+                
+                let htmlString:String = html as! String
+                
+                if let doc = try? HTML(html: htmlString, encoding: .utf8) {
+                    // get next page url
+                    for link in doc.xpath("//a[contains(text(),'下一章')]") {
+                        guard let nextPageURLComponentString:String = link["href"] else {continue}
+                        
+                        var url = URL.init(string: "")
+                        url = URL.init(string:nextPageURLComponentString)
+                        print("load the next page. url= \(url!)")
+                        
+                        let request = URLRequest(url: url!)
+                        self.readerWebView.load(request)
+                        self.webLoadingActivityIndicator.startAnimating()
+                    }
+                }
+            })
+        }
         
         if (webNovelSource == .六九書吧) {
             readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
@@ -188,28 +217,12 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
             })
         }
+        */
         
-        if (webNovelSource == .六九書吧) {
-            readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
-                
-                let htmlString:String = html as! String
-                
-                if let doc = try? HTML(html: htmlString, encoding: .utf8) {
-                    // get next page url
-                    for link in doc.xpath("//a[contains(text(),'下一章')]") {
-                        guard let nextPageURLComponentString:String = link["href"] else {continue}
-                        
-                        var url = URL.init(string: "")
-                        url = URL.init(string:nextPageURLComponentString)
-                        print("load the next page. url= \(url!)")
-                        
-                        let request = URLRequest(url: url!)
-                        self.readerWebView.load(request)
-                        self.webLoadingActivityIndicator.startAnimating()
-                    }
-                }
-            })
-        }
+        
+        // 和圖書
+        /*
+         */
         
         // 飄天文學
         /*
@@ -249,14 +262,16 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     func loadPreviousChapter() {
         
-        if (webNovelSource == .六九書吧) {
+        // 黃金屋
+        if (webNovelSource == .黃金屋) {
             readerWebView.evaluateJavaScript("JumpPrev();", completionHandler: nil)
         }
         
-        
-        // 和圖書
+        // 六九書吧
         /*
-         */
+        if (webNovelSource == .六九書吧) {
+            readerWebView.evaluateJavaScript("JumpPrev();", completionHandler: nil)
+        }
         
         if (webNovelSource == .六九書吧) {
             readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
@@ -305,6 +320,11 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
             })
         }
+        */
+        
+        // 和圖書
+        /*
+         */
         
         // 飄天文學
         /*
@@ -415,9 +435,21 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                         contentString += pp
                     }
                 }
-
+                // 黃金屋
+                
+                for p in doc.xpath("//div[@id='Lab_Contents']/p") {
+                    let pStr = p.text!.trimmingCharacters(in: .whitespaces)
+                    if pStr.starts(with: "\n") {
+                        continue
+                    }
+                    print("str= \(pStr)")
+                    contentString += pStr
+                    contentString += "\n"
+                }
                 
                 
+                // 69書吧
+                /*
                 if (self.webNovelSource == .六九書吧) {
                     // use default format
                     self._firstLineHeadIndent = -1.0
@@ -607,6 +639,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     contentString = contentString.replacingOccurrences(of: "<br>", with: "\n")
                     
                 }
+                */
                 // 和圖書
                 /*
                 for div in doc.xpath("//dd[@id='content']/div") {
@@ -751,7 +784,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         pageNumber -= 1
         if pageNumber < 0 {
             pageNumber = loadFromCloudPreviousChapterNumberOfPages()
-            
+            print("page number of the previous chapter: \(pageNumber)")
             removeAllPageTextViews()
             pageTextViews = [VCTextView]()
             loadPreviousChapter()
