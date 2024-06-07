@@ -38,8 +38,10 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 //var defaultBookContentURLString = "https://www.69shuba.pro/txt/15217/8904931" // 六九書吧 chap. 143
 
 // 高手寂寞
-var defaultBookContentURLString = "https://t.hjwzw.com/Read/6121_1233778" // 黃金屋 -- 第一節 漸變
+//var defaultBookContentURLString = "https://t.hjwzw.com/Read/6121_1233778" // 黃金屋 -- 第一節 漸變
 
+// 永生
+var defaultBookContentURLString = "https://uukanshu.cc/book/6767/4078121.html" // uu看書 -- 第一百四十二章 海上洞府
 
 let isInitialRun = false
 
@@ -82,7 +84,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     @IBOutlet weak var webLoadingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var pageNumberLabel: UILabel!
     
-    let webNovelSource:WebNovelSource = .黃金屋
+    let webNovelSource:WebNovelSource = .uu看書
     // touch
     var _lastTouchedPointX:CGFloat = 0.0
     var _lastTouchedPointY:CGFloat = 0.0
@@ -94,9 +96,11 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     var pageTextViews = [VCTextView]()
     
-    let _textLineSpacing:CGFloat = 10.0
+    let _textLineSpacing:CGFloat = 12.0
     let _charactersSpacing:CGFloat = 0.5
-    let _chapterContentFontSize:CGFloat = 34.0
+    let _chapterContentFontSize:CGFloat = 32.0
+    let _paragraphSpacing:CGFloat = 10.0
+    
     var _firstLineHeadIndent:CGFloat = -1.0 // to handle the text formatting that does not need indentation
     
     let _backgroundColor = UIColor.init(red: 26.0 / 255.0, green: 26.0 / 255.0, blue: 26.0 / 255.0, alpha: 1.0)
@@ -160,13 +164,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     func loadNextChapter() {
         
-        // 黃金屋
         if (webNovelSource == .黃金屋) {
             readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
         }
         
-        // 六九書吧
-        /*
         if (webNovelSource == .六九書吧) {
             readerWebView.evaluateJavaScript("JumpNext();", completionHandler: nil)
         }
@@ -217,7 +218,32 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
             })
         }
-        */
+        
+        if (self.webNovelSource == .uu看書) {
+            readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
+                
+                let htmlString:String = html as! String
+                
+                if let doc = try? HTML(html: htmlString, encoding: .utf8) {
+                    // get next page url
+                    guard let link = doc.xpath("//a[contains(text(),'下一章')]").first else {print("error: next chapter url not found"); return}
+                    guard let nextPageURLComponentString:String = link["href"] else {print("error!"); return}
+                    print("next_href= \(nextPageURLComponentString)")
+                    
+                    // construct the url
+                    let urlBaseString = "https://uukanshu.cc"
+
+                    var url = URL.init(string: urlBaseString+nextPageURLComponentString)
+                    print("load the next page. url= \(url!)")
+
+                    let request = URLRequest(url: url!)
+                    self.readerWebView.load(request)
+                    self.webLoadingActivityIndicator.startAnimating()
+
+                    
+                }
+            })
+        }
         
         
         // 和圖書
@@ -262,13 +288,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     func loadPreviousChapter() {
         
-        // 黃金屋
         if (webNovelSource == .黃金屋) {
             readerWebView.evaluateJavaScript("JumpPrev();", completionHandler: nil)
         }
         
-        // 六九書吧
-        /*
         if (webNovelSource == .六九書吧) {
             readerWebView.evaluateJavaScript("JumpPrev();", completionHandler: nil)
         }
@@ -320,8 +343,33 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                 }
             })
         }
-        */
         
+        if (self.webNovelSource == .uu看書) {
+            readerWebView.evaluateJavaScript("document.documentElement.outerHTML.toString()", completionHandler: { (html: Any?, error: Error?) in
+                
+                let htmlString:String = html as! String
+                
+                if let doc = try? HTML(html: htmlString, encoding: .utf8) {
+                    // get next page url
+                    guard let link = doc.xpath("//a[contains(text(),'上一章')]").first else {print("error: next chapter url not found"); return}
+                    guard let nextPageURLComponentString:String = link["href"] else {print("error!"); return}
+                    print("next_href= \(nextPageURLComponentString)")
+                    
+                    // construct the url
+                    let urlBaseString = "https://uukanshu.cc"
+
+                    var url = URL.init(string: urlBaseString+nextPageURLComponentString)
+                    print("load the previous page. url= \(url!)")
+
+                    let request = URLRequest(url: url!)
+                    self.readerWebView.load(request)
+                    self.webLoadingActivityIndicator.startAnimating()
+
+                    
+                }
+            })
+        }
+
         // 和圖書
         /*
          */
@@ -435,20 +483,81 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                         contentString += pp
                     }
                 }
-                // 黃金屋
                 
-                for p in doc.xpath("//div[@id='Lab_Contents']/p") {
-                    let pStr = p.text!.trimmingCharacters(in: .whitespaces)
-                    if pStr.starts(with: "\n") {
-                        continue
+                if (self.webNovelSource == .uu看書) {
+                    
+                    
+                    //                let p = doc.xpath("//p[@class='readcotent bbb font-normal']").first!
+                    //
+                    //                let pStr = p.text!
+                    //
+                    //                for line_part in pStr.components(separatedBy: "\n") {
+                    //                    if line_part.isEmpty {
+                    //                        continue
+                    //                    }
+                    //                    let line = line_part.trimmingCharacters(in: .whitespacesAndNewlines)
+                    //                    contentString += line + "\n"
+                    //                    print("line= \(line)")
+                    //                }
+                    
+                    
+                    if let contentRootElement:XMLElement = doc.xpath("//p[@class='readcotent bbb font-normal']").first {
+                        
+                        
+                        //                    // remove div tags
+                        //                    let divs = doc.xpath("//p[@class='readcotent bbb font-normal']/div")
+                        //                    for div in divs {
+                        //                        contentRootElement.removeChild(div)
+                        //                    }
+                        // remove a tags
+                        let a_tags = doc.xpath("//p[@class='readcotent bbb font-normal']/a")
+                        for a_tag in a_tags {
+                            contentRootElement.removeChild(a_tag)
+                        }
+                        
+                        guard let htmlString = contentRootElement.innerHTML else {
+                            print("Error: HTML text conversion failed")
+                            return
+                        }
+                        var workingString1 = ""
+                        var workingString2 = ""
+                        
+                        workingString1 = htmlString.removePTag()
+                        workingString1 = workingString1.removeRemarkTag()
+                        
+                        for line in workingString1.components(separatedBy: "<br>") {
+                            if line.isEmpty {
+                                continue
+                            }
+                            workingString2 += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+                            //                        print("line= \(line)")
+                        }
+                        for line in workingString2.components(separatedBy: "\n") {
+                            if line.isEmpty {
+                                continue
+                            }
+                            contentString += line.trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+                            //                        print("line= \(line)")
+                        }
+                        
+                        //                    print("contentString= \(contentString)")
                     }
-                    print("str= \(pStr)")
-                    contentString += pStr
-                    contentString += "\n"
+                    
                 }
                 
+                if (self.webNovelSource == .黃金屋) {
+                    
+                    for p in doc.xpath("//div[@id='Lab_Contents']/p") {
+                        let pStr = p.text!.trimmingCharacters(in: .whitespaces)
+                        if pStr.starts(with: "\n") {
+                            continue
+                        }
+                        print("str= \(pStr)")
+                        contentString += pStr
+                        contentString += "\n"
+                    }
+                }
                 
-                // 69書吧
                 /*
                 if (self.webNovelSource == .六九書吧) {
                     // use default format
@@ -588,8 +697,8 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     contentString = contentString.replacingOccurrences(of: "<br>", with: "\n")
                     // get rid of <div> </div> pair
                 }
+                */
                 
-                // 69書吧
                 if (self.webNovelSource == .六九書吧) {
                     // use default format
                     self._firstLineHeadIndent = -1.0
@@ -639,7 +748,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     contentString = contentString.replacingOccurrences(of: "<br>", with: "\n")
                     
                 }
-                */
+                
                 // 和圖書
                 /*
                 for div in doc.xpath("//dd[@id='content']/div") {
@@ -649,6 +758,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     contentString += "\n"
                 }
                 */
+                
                 // 飄天文學
                 /*
                 self._firstLineHeadIndent = self._chapterContentFontSize + self._charactersSpacing
@@ -717,6 +827,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         
         let workingAttributedString = NSMutableAttributedString.init(string: string)
         let paragraphStyle = NSMutableParagraphStyle.init()
+        paragraphStyle.paragraphSpacing = _paragraphSpacing
         paragraphStyle.lineSpacing = _textLineSpacing
         paragraphStyle.firstLineHeadIndent = _firstLineHeadIndent < 0 ? (_chapterContentFontSize * 2.0 + _charactersSpacing * 3.0) : _firstLineHeadIndent
         paragraphStyle.alignment = .justified
