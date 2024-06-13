@@ -41,7 +41,7 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 //var defaultBookContentURLString = "https://t.hjwzw.com/Read/6121_1233778" // 黃金屋 -- 第一節 漸變
 
 // 永生
-var defaultBookContentURLString = "https://uukanshu.cc/book/6767/4078121.html" // uu看書 -- 第一百四十二章 海上洞府
+var defaultBookContentURLString = "https://uukanshu.cc/book/6767/4078501.html" // uu看書 -- 第一百四十二章 第三百三十六章 未婚妻
 
 let isInitialRun = false
 
