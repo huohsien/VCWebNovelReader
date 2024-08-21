@@ -103,10 +103,10 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     var pageTextViews = [VCTextView]()
     
-    let _textLineSpacing:CGFloat = 12.0
+    let _textLineSpacing:CGFloat = 4.0
     let _charactersSpacing:CGFloat = 0.5
-    let _chapterContentFontSize:CGFloat = 32.0
-    let _paragraphSpacing:CGFloat = 10.0
+    let _chapterContentFontSize:CGFloat = 34.0
+    let _paragraphSpacing:CGFloat = 14.0
     
     var _firstLineHeadIndent:CGFloat = -1.0 // to handle the text formatting that does not need indentation
     
