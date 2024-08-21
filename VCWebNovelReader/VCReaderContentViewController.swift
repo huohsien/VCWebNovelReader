@@ -41,7 +41,14 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 //var defaultBookContentURLString = "https://t.hjwzw.com/Read/6121_1233778" // 黃金屋 -- 第一節 漸變
 
 // 永生
-var defaultBookContentURLString = "https://uukanshu.cc/book/6767/4078501.html" // uu看書 -- 第一百四十二章 第三百三十六章 未婚妻
+//var defaultBookContentURLString = "https://uukanshu.cc/book/6767/4080318.html" // uu看書 -- 第一千二百六十一章 巨鼓山脈
+
+// 夜的命名術
+//var defaultBookContentURLString = "https://uukanshu.cc/book/17165/12032820.html" // uu看書 -- 901、成年禮
+
+// 我是大玩家
+var defaultBookContentURLString = "https://uukanshu.cc/book/5257/3309644.html" // uu看書 -- 107、昨晚我在秋名山輸給一輛自行車(第一更)
+
 
 let isInitialRun = false
 
@@ -831,8 +838,9 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
         paragraphStyle.lineSpacing = _textLineSpacing
         paragraphStyle.firstLineHeadIndent = _firstLineHeadIndent < 0 ? (_chapterContentFontSize * 2.0 + _charactersSpacing * 3.0) : _firstLineHeadIndent
         paragraphStyle.alignment = .justified
-        let font = UIFont.systemFont(ofSize: _chapterContentFontSize)
-        
+//        let font = UIFont.systemFont(ofSize: _chapterContentFontSize)
+        let font = UIFont(name: "NotoSansTC-Regular", size: _chapterContentFontSize)
+
         let attributionDict = [NSAttributedString.Key.paragraphStyle: paragraphStyle, NSAttributedString.Key.font: font, NSAttributedString.Key.backgroundColor: _backgroundColor, NSAttributedString.Key.foregroundColor: _foregroundColor]
         
         workingAttributedString.addAttributes(attributionDict, range: NSMakeRange(0, string.count))

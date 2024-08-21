@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6600D1B22C759EE200D00CCD /* NotoSansTC-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6600D1B12C759EC300D00CCD /* NotoSansTC-Regular.ttf */; };
 		6654D49D28BC876400752FA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6654D49C28BC876400752FA0 /* AppDelegate.swift */; };
 		6654D49F28BC876400752FA0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6654D49E28BC876400752FA0 /* SceneDelegate.swift */; };
 		6654D4A128BC876400752FA0 /* VCReaderContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6654D4A028BC876400752FA0 /* VCReaderContentViewController.swift */; };
@@ -20,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		4401D41C99A4C6B60FC6D074 /* Pods-VCWebNovelReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VCWebNovelReader.debug.xcconfig"; path = "Target Support Files/Pods-VCWebNovelReader/Pods-VCWebNovelReader.debug.xcconfig"; sourceTree = "<group>"; };
+		6600D1B12C759EC300D00CCD /* NotoSansTC-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansTC-Regular.ttf"; sourceTree = "<group>"; };
 		6654D49928BC876400752FA0 /* VCWebNovelReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VCWebNovelReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6654D49C28BC876400752FA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6654D49E28BC876400752FA0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 		6654D49B28BC876400752FA0 /* VCWebNovelReader */ = {
 			isa = PBXGroup;
 			children = (
+				6600D1B12C759EC300D00CCD /* NotoSansTC-Regular.ttf */,
 				668D97AF28F96050004531FC /* VCWebNovelReader.entitlements */,
 				6654D49C28BC876400752FA0 /* AppDelegate.swift */,
 				6654D49E28BC876400752FA0 /* SceneDelegate.swift */,
@@ -158,6 +161,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6600D1B22C759EE200D00CCD /* NotoSansTC-Regular.ttf in Resources */,
 				6654D4AC28BC876400752FA0 /* LaunchScreen.storyboard in Resources */,
 				6654D4A928BC876400752FA0 /* Assets.xcassets in Resources */,
 				6654D4A428BC876400752FA0 /* Main.storyboard in Resources */,
