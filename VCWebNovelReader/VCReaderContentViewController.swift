@@ -52,7 +52,7 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 // 造化之門
 var defaultBookContentURLString = "https://uukanshu.cc/book/7234/4433275.html" // uu看書 -- 第0548章 暮光沙的美
 
-let isInitialRun = true
+let isInitialRun = false
 
 var cloudStore = NSUbiquitousKeyValueStore.default
 
