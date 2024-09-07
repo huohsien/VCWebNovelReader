@@ -47,10 +47,12 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 //var defaultBookContentURLString = "https://uukanshu.cc/book/17165/12032820.html" // uu看書 -- 901、成年禮
 
 // 我是大玩家
-var defaultBookContentURLString = "https://uukanshu.cc/book/5257/3309644.html" // uu看書 -- 107、昨晚我在秋名山輸給一輛自行車(第一更)
+//var defaultBookContentURLString = "https://uukanshu.cc/book/5257/3309644.html" // uu看書 -- 107、昨晚我在秋名山輸給一輛自行車(第一更)
 
+// 造化之門
+var defaultBookContentURLString = "https://uukanshu.cc/book/7234/4433275.html" // uu看書 -- 第0548章 暮光沙的美
 
-let isInitialRun = false
+let isInitialRun = true
 
 var cloudStore = NSUbiquitousKeyValueStore.default
 
@@ -103,7 +105,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     
     var pageTextViews = [VCTextView]()
     
-    let _textLineSpacing:CGFloat = 4.0
+    let _textLineSpacing:CGFloat = 2.0
     let _charactersSpacing:CGFloat = 0.5
     let _chapterContentFontSize:CGFloat = 34.0
     let _paragraphSpacing:CGFloat = 14.0
@@ -508,7 +510,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     //                }
                     
                     
-                    if let contentRootElement:XMLElement = doc.xpath("//p[@class='readcotent bbb font-normal']").first {
+                    if let contentRootElement:XMLElement = doc.xpath("//*[@class='readcotent bbb font-normal']").first { //20240907 uukansu change web page structure form tag p to div. So I use * for it to temporary solve the problem
                         
                         
                         //                    // remove div tags
