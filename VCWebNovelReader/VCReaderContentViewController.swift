@@ -513,11 +513,16 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     if let contentRootElement:XMLElement = doc.xpath("//*[@class='readcotent bbb font-normal']").first { //20240907 uukansu change web page structure form tag p to div. So I use * for it to temporary solve the problem
                         
                         
-                        //                    // remove div tags
-                        //                    let divs = doc.xpath("//p[@class='readcotent bbb font-normal']/div")
-                        //                    for div in divs {
-                        //                        contentRootElement.removeChild(div)
-                        //                    }
+                        // remove div tags
+                        let divs = doc.xpath("//*[@class='readcotent bbb font-normal']/div")
+                        for div in divs {
+                            contentRootElement.removeChild(div)
+                        }
+                        // remove script tags
+                        let scripts = doc.xpath("//*[@class='readcotent bbb font-normal']/script")
+                        for script in scripts {
+                            contentRootElement.removeChild(script)
+                        }
                         // remove a tags
                         let a_tags = doc.xpath("//p[@class='readcotent bbb font-normal']/a")
                         for a_tag in a_tags {
