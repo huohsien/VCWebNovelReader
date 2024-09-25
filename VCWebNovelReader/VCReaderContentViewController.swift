@@ -50,7 +50,7 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 //var defaultBookContentURLString = "https://uukanshu.cc/book/5257/3309644.html" // uu看書 -- 107、昨晚我在秋名山輸給一輛自行車(第一更)
 
 // 造化之門
-var defaultBookContentURLString = "https://uukanshu.cc/book/7234/4433275.html" // uu看書 -- 第0548章 暮光沙的美
+var defaultBookContentURLString = "https://uukanshu.cc/book/7234/4434992.html" // uu看書 -- 第1179章 末路聖皇
 
 let isInitialRun = false
 
