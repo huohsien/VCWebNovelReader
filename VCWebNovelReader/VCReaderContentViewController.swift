@@ -49,8 +49,13 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 // 我是大玩家
 //var defaultBookContentURLString = "https://uukanshu.cc/book/5257/3309644.html" // uu看書 -- 107、昨晚我在秋名山輸給一輛自行車(第一更)
 
-// 造化之門
-var defaultBookContentURLString = "https://uukanshu.cc/book/7234/4434992.html" // uu看書 -- 第1179章 末路聖皇
+//// 造化之門
+//var defaultBookContentURLString = "https://uukanshu.cc/book/7234/4435547.html" // uu看書 -- 第1399章 融合規則
+
+// 最強棄少
+var defaultBookContentURLString = "https://uukanshu.cc/book/4542/3039706.html" // uu看書 -- 第九十八章 最後一個消息
+
+
 
 let isInitialRun = false
 
