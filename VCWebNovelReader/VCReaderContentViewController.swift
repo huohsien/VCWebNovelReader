@@ -53,11 +53,43 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 //var defaultBookContentURLString = "https://uukanshu.cc/book/7234/4435547.html" // uu看書 -- 第1399章 融合規則
 
 // 最強棄少
-var defaultBookContentURLString = "https://uukanshu.cc/book/4542/3039706.html" // uu看書 -- 第九十八章 最後一個消息
+//var defaultBookContentURLString = "https://uukanshu.cc/book/4542/3229237.html" // uu看書 -- 第九十八章 最後一個消息
+
+// 間客
+
+//var defaultBookContentURLString = "https://uukanshu.cc/book/6884/4166671.html" // uu看書 -- 第二百五十二章 流年（中）
+
+// 撈屍人
+
+//var defaultBookContentURLString = "https://uukanshu.cc/book/25060/16103768.html" // uu看書 -- 第127章 （本卷完）
 
 
+// 武動乾坤
 
-let isInitialRun = false
+//var defaultBookContentURLString = "https://uukanshu.cc/book/6350/3734392.html" // uu看書 -- 第兩百零三章 小炎之危
+
+// 虧成首富從遊戲開始
+
+//var defaultBookContentURLString = "https://uukanshu.cc/book/2079/1574836.html" // uu看書 -- 第197章 這遊戲真是爛得難以置信……
+
+// 夢回大明春
+
+//var defaultBookContentURLString = "https://uukanshu.cc/book/434/8356029.html" // uu看書 -- 358【亂拳迷惑老師傅】
+
+// 將夜
+
+//var defaultBookContentURLString = "https://uukanshu.cc/book/5550/3166730.html" // uu看書 -- 第七十六章 黑色閃電以及弓弦的奏鳴
+
+// 沒錢修什麼仙？
+
+//var defaultBookContentURLString = "https://uukanshu.cc/book/25312/16302523.html" // uu看書 -- 第72章 壓制
+
+//誰讓他修仙的！
+
+var defaultBookContentURLString = "https://uukanshu.cc/book/25075/16100615.html" // uu看書 -- 第六十八章 正確的通關方
+
+
+let isInitialRun = true
 
 var cloudStore = NSUbiquitousKeyValueStore.default
 
@@ -247,7 +279,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     // construct the url
                     let urlBaseString = "https://uukanshu.cc"
 
-                    var url = URL.init(string: urlBaseString+nextPageURLComponentString)
+                    let url = URL.init(string: urlBaseString+nextPageURLComponentString)
                     print("load the next page. url= \(url!)")
 
                     let request = URLRequest(url: url!)
@@ -372,7 +404,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
                     // construct the url
                     let urlBaseString = "https://uukanshu.cc"
 
-                    var url = URL.init(string: urlBaseString+nextPageURLComponentString)
+                    let url = URL.init(string: urlBaseString+nextPageURLComponentString)
                     print("load the previous page. url= \(url!)")
 
                     let request = URLRequest(url: url!)
@@ -855,7 +887,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
 
         let attributionDict = [NSAttributedString.Key.paragraphStyle: paragraphStyle, NSAttributedString.Key.font: font, NSAttributedString.Key.backgroundColor: _backgroundColor, NSAttributedString.Key.foregroundColor: _foregroundColor]
         
-        workingAttributedString.addAttributes(attributionDict, range: NSMakeRange(0, string.count))
+        workingAttributedString.addAttributes(attributionDict as [NSAttributedString.Key : Any], range: NSMakeRange(0, string.count))
         workingAttributedString.addAttribute(NSAttributedString.Key.kern, value: _charactersSpacing, range: NSMakeRange(0,string.count))
         
         let attributedString = NSAttributedString.init(attributedString: workingAttributedString)
