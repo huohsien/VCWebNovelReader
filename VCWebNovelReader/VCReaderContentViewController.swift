@@ -86,10 +86,25 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 
 //誰讓他修仙的！
 
-var defaultBookContentURLString = "https://uukanshu.cc/book/25075/16100615.html" // uu看書 -- 第六十八章 正確的通關方
+//var defaultBookContentURLString = "https://uukanshu.cc/book/25075/16100937.html" // uu看書 -- 第三百八十八章 妖仙和木仙之戰
 
+//天才俱樂部
 
-let isInitialRun = true
+//var defaultBookContentURLString = "https://uukanshu.cc/book/25053/16044104.html" // uu看書 -- 第389章 戲精、人工智障、倒霉蛋
+
+//苟在女魔頭身邊偷偷修煉
+
+//var defaultBookContentURLString = "https://uukanshu.cc/book/25101/16117658.html" // uu看書 -- 第六十九章 馬上就要富起來了【求訂閱】
+
+//文豪1978
+
+//var defaultBookContentURLString = "https://uukanshu.cc/book/25093/16115514.html"  //uu看書 -- 第63章 等爺以後有錢的
+
+//全球高武
+
+var defaultBookContentURLString = "https://uukanshu.cc/book/978/613067.html"  //uu看書 -- 第八十二章 家人 （求首訂）
+
+let isInitialRun = false
 
 var cloudStore = NSUbiquitousKeyValueStore.default
 
