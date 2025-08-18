@@ -102,7 +102,11 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 
 //全球高武
 
-var defaultBookContentURLString = "https://uukanshu.cc/book/978/613067.html"  //uu看書 -- 第八十二章 家人 （求首訂）
+//var defaultBookContentURLString = "https://uukanshu.cc/book/978/722364.html"  //uu看書 -- 第775章 為了你，不惜一切
+
+//這遊戲也太真實了
+var defaultBookContentURLString = "https://uukanshu.cc/book/18245/10746031.html"  //uu看書 -- 第63章 大魚吃小魚，小魚吃蝦米（1/4）
+
 
 let isInitialRun = false
 
