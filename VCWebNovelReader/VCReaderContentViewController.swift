@@ -105,7 +105,10 @@ let PREVIOUS_NUMBER_PAGES_KEY = "PREVIOUS_NUMBER_PAGES_KEY"
 //var defaultBookContentURLString = "https://uukanshu.cc/book/978/722364.html"  //uu看書 -- 第775章 為了你，不惜一切
 
 //這遊戲也太真實了
-var defaultBookContentURLString = "https://uukanshu.cc/book/18245/10746031.html"  //uu看書 -- 第63章 大魚吃小魚，小魚吃蝦米（1/4）
+//var defaultBookContentURLString = "https://uukanshu.cc/book/18245/10919497.html"  //uu看書 -- 第148章 一切都是為了外匯
+
+//凡人修仙傳
+var defaultBookContentURLString = "https://uukanshu.cc/book/5070/2774161.html"  //uu看書 -- 第一百九十三章 敵友之分
 
 
 let isInitialRun = false
