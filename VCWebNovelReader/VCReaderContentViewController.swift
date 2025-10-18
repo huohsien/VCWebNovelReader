@@ -174,7 +174,7 @@ class VCReaderContentViewController: UIViewController,WKNavigationDelegate,UITex
     let _backgroundColor = UIColor.init(red: 26.0 / 255.0, green: 26.0 / 255.0, blue: 26.0 / 255.0, alpha: 1.0)
     let _foregroundColor = UIColor.init(red: 178.0 / 255.0, green: 178.0 / 255.0, blue: 178.0 / 255.0, alpha: 1.0)
     
-//    let readerWebView = WKWebView.init(frame: .zero)
+//    let readerWebView = WKWebView.init()
     let readerWebView = WKWebView.init(frame: .zero)
 
     var pageNumber = 0
